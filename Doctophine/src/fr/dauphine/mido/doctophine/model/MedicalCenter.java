@@ -21,7 +21,9 @@ public class MedicalCenter {
 	@Column(name="phone")
 	private String phone;
 	
-	
+	public int getId() {
+		return id;
+	}
 	public String getPhone() {
 		return phone;
 	}

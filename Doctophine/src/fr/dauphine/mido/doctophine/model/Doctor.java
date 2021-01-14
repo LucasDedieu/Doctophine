@@ -6,8 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity @Table(name="patient")
-public class Patient extends AbstractAccount {
+@Entity @Table(name="doctor")
+public class Doctor extends AbstractAccount {
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
 	

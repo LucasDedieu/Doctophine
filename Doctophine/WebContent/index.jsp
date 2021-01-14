@@ -1,4 +1,7 @@
 <!doctype html>
+<%@page import="fr.dauphine.mido.doctophine.model.Activity"%>
+<%@page import="fr.dauphine.mido.doctophine.model.Speciality"%>
+<%@page import="fr.dauphine.mido.doctophine.model.Doctor"%>
 <%@page import="fr.dauphine.mido.doctophine.model.Patient"%>
 <%@page import="java.util.List"%>
 <%@page import="fr.dauphine.mido.doctophine.model.MedicalCenter"%>
@@ -15,6 +18,8 @@
     <title>Doctophine</title>
   </head>
   <body>
+  
+  
     <h1>Liste de centre medicaux</h1>
   	<% List<MedicalCenter> medicalCenterList = DoctophineService.getInstance().getMedicalCenterList(); %>
   	<ul>
@@ -23,6 +28,9 @@
 	<% } %>
 	</ul>
 	
+	
+	
+	
 	<h1>Liste des patients</h1>
   	<% List<Patient> patientList = DoctophineService.getInstance().getPatientList(); %>
   	<ul>
@@ -30,6 +38,40 @@
   	  <li><%= patient.getFirstName() %></li>
 	<% } %>
 	</ul>
+	
+	
+	
+	
+	<h1>Liste des docteurs</h1>
+  	<% List<Doctor> doctorList = DoctophineService.getInstance().getDoctorList(); %>
+  	<ul>
+  	<% for(Doctor doctor : doctorList) { %>
+  	  <li><%= doctor.getFirstName() %></li>
+	<% } %>
+	</ul>
+	
+	
+	
+	
+	
+	 <h1>Liste des specialités</h1>
+  	<% List<Speciality> specialityList = DoctophineService.getInstance().getSpecialityList(); %>
+  	<ul>
+  	<% for(Speciality speciality : specialityList) { %>
+  	  <li><%= speciality.getName() %></li>
+	<% } %>
+	</ul>
+	
+	
+	
+	<h1>Liste des activités</h1>
+  	<% List<Activity> activityList = DoctophineService.getInstance().getActivityList(); %>
+  	<ul>
+  	<% for(Activity activity : activityList) { %>
+  	  <li><%= activity.getDoctor().getFirstName() %>-<%= activity.getMedicalCenter().getName() %>-<%= activity.getSpeciality().getName() %></li>
+	<% } %>
+	</ul>
+	 
 
     <!-- Optional JavaScript; choose one of the two! -->
 

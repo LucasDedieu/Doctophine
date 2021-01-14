@@ -4,6 +4,9 @@
 		<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 		<class>fr.dauphine.mido.doctophine.model.MedicalCenter</class>
 		<class>fr.dauphine.mido.doctophine.model.Patient</class>
+		<class>fr.dauphine.mido.doctophine.model.Doctor</class>
+		<class>fr.dauphine.mido.doctophine.model.Speciality</class>
+		<class>fr.dauphine.mido.doctophine.model.Activity</class>
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
