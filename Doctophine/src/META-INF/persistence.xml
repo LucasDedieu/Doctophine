@@ -7,6 +7,10 @@
 		<class>fr.dauphine.mido.doctophine.model.Doctor</class>
 		<class>fr.dauphine.mido.doctophine.model.Speciality</class>
 		<class>fr.dauphine.mido.doctophine.model.Activity</class>
+		<class>fr.dauphine.mido.doctophine.model.Availability</class>
+		<class>fr.dauphine.mido.doctophine.model.Appointment</class>
+		
+		
         <exclude-unlisted-classes>false</exclude-unlisted-classes>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>

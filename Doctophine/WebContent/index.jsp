@@ -24,7 +24,7 @@
   	<% List<MedicalCenter> medicalCenterList = DoctophineService.getInstance().getMedicalCenterList(); %>
   	<ul>
   	<% for(MedicalCenter medicalCenter : medicalCenterList) { %>
-  	  <li><%= medicalCenter.getName() %></li>
+  	  <li><%= medicalCenter%></li>
 	<% } %>
 	</ul>
 	
@@ -35,7 +35,7 @@
   	<% List<Patient> patientList = DoctophineService.getInstance().getPatientList(); %>
   	<ul>
   	<% for(Patient patient : patientList) { %>
-  	  <li><%= patient.getFirstName() %></li>
+  	  <li><%= patient %></li>
 	<% } %>
 	</ul>
 	
@@ -46,7 +46,7 @@
   	<% List<Doctor> doctorList = DoctophineService.getInstance().getDoctorList(); %>
   	<ul>
   	<% for(Doctor doctor : doctorList) { %>
-  	  <li><%= doctor.getFirstName() %></li>
+  	  <li><%= doctor %> - <%= doctor.getMedicalCenterList() %></li>
 	<% } %>
 	</ul>
 	
@@ -71,6 +71,12 @@
   	  <li><%= activity.getDoctor().getFirstName() %>-<%= activity.getMedicalCenter().getName() %>-<%= activity.getSpeciality().getName() %></li>
 	<% } %>
 	</ul>
+	
+	
+	
+
+	
+	
 	 
 
     <!-- Optional JavaScript; choose one of the two! -->

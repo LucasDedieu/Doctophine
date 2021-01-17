@@ -102,5 +102,14 @@ public abstract class AbstractAccount {
 	}
 	
 	
+	public String getFullName() {
+		return firstName+" "+lastName;
+	}
+	
+	public String toString() {
+		return getFullName();
+	}
+	
+	
 	
 }
