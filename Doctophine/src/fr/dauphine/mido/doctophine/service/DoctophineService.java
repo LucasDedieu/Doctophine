@@ -1,12 +1,16 @@
 package fr.dauphine.mido.doctophine.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
+import fr.dauphine.mido.doctophine.model.AbstractEvent;
 import fr.dauphine.mido.doctophine.model.Activity;
 import fr.dauphine.mido.doctophine.model.Appointment;
 import fr.dauphine.mido.doctophine.model.Availability;
@@ -188,5 +192,56 @@ public class DoctophineService {
             if ( entityManagerFactory != null ) entityManagerFactory.close();
         }
 	}
+	
+	
+	public List<List<AbstractEvent>> getCalendar(List<Appointment> appointments, int week, int year){
+		List<List<AbstractEvent>> agenda = new ArrayList<>();
+		
+		int[] days = new int[] {
+				Calendar.MONDAY, 
+				Calendar.TUESDAY, 
+				Calendar.WEDNESDAY, 
+				Calendar.THURSDAY, 
+				Calendar.FRIDAY, 
+				Calendar.SATURDAY, 
+				Calendar.SUNDAY };
+
+		for(int i = 0; i < days.length; i++) { //car date commencent le dimanche
+			int day = days[i];
+			List<AbstractEvent> dayList = new ArrayList<>();
+			agenda.add(dayList); 
+			for(int slot=0; slot<24; slot++) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.set(Calendar.YEAR, year);
+				calendar.set(Calendar.WEEK_OF_YEAR, week);
+				calendar.set(Calendar.DAY_OF_WEEK, day);
+				calendar.set(Calendar.HOUR_OF_DAY, 8+ (int)slot/2);
+				calendar.set(Calendar.MINUTE, slot%2==0?0:30);
+				calendar.set(Calendar.SECOND, 0);
+
+				Date slotDate = calendar.getTime();
+				Appointment slotAppointment = null;
+				long slotTime = slotDate.getTime()/1000;
+				for(Iterator<Appointment> it = appointments.iterator();it.hasNext();) {
+					Appointment appointment = it.next();
+					long appointmentTime = appointment.getStartDate().getTime()/1000;
+					if(appointmentTime==slotTime) {
+						slotAppointment= appointment;
+						it.remove();
+						break;
+					}
+				}
+				if(slotAppointment != null) {
+					dayList.add(slotAppointment);
+				}
+				else {
+					dayList.add(null);
+				}
+			}
+		}
+		
+		return agenda;
+	}
+	
 	
 }

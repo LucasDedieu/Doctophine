@@ -5,6 +5,7 @@ import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,6 +28,8 @@ public class CalendarController extends AbstractController{
 	private MedicalCenter medicalCenter;
 	private int week;
 	private int year;
+	private boolean opNext;
+	private boolean opPrev;
 	
 	
 	public void init() {
@@ -39,9 +42,27 @@ public class CalendarController extends AbstractController{
 		if(medicalCenter == null) {
 			medicalCenter = getDefaultMedicalCenter();
 		}
+		if(opNext) {
+			week = getNextWeek();
+		}
+		if(opPrev) {
+			week=getPrevWeek();
+		}
 	}
 	
-
+	private int getNextWeek() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.WEEK_OF_YEAR, week);
+		calendar.add(Calendar.WEEK_OF_YEAR, 1);
+		return calendar.get(Calendar.WEEK_OF_YEAR);
+	}
+	
+	private int getPrevWeek() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.WEEK_OF_YEAR, week);
+		calendar.add(Calendar.WEEK_OF_YEAR, -1);
+		return calendar.get(Calendar.WEEK_OF_YEAR);
+	}
 
 	public void setMedicalCenter(int id) {
 		this.medicalCenter = ds.getMedicalCenter(id);
@@ -87,7 +108,7 @@ public class CalendarController extends AbstractController{
 		return getLoggedDoctor().getMedicalCenterList();
 	}
 	
-	public List<Appointment> getAbstractEventList(){
+	public List<Appointment> getAppointmentList(){
 		Activity activity = ds.getActivity(getLoggedDoctor(), medicalCenter);
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.WEEK_OF_YEAR, week);
@@ -118,5 +139,18 @@ public class CalendarController extends AbstractController{
         }
 	}
 	
+	public void setOpNext(boolean opNext) {
+		this.opNext = opNext;
+	}
+
+
+
+	public void setOpPrev(boolean opPrev) {
+		this.opPrev = opPrev;
+	}
+
+	public List<List<AbstractEvent>> getCalendar(){
+		return ds.getCalendar(getAppointmentList(), week, year);
+	}
 	
 }
