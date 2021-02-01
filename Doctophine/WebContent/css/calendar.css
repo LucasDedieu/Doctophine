@@ -1,0 +1,37 @@
+.calendar .appointment{
+	background-color:#0dcaf0;
+}
+
+.calendar .availability{
+	background-color:#88b04b;
+}
+
+.calendar .empty{
+	background-color:#dc3545;
+}
+
+.calendar .event{
+	width:10%;
+	color:white;
+	text-align:center;
+	border:1px solid #fff;
+	
+}
+
+
+
+.calendar .day TH{
+
+	text-align:center;
+}
+
+.calendar{
+	width:70%;
+	margin:auto;
+}
+
+.calendar .hour{
+	width:1%;
+	text-align:right;
+}
+

@@ -1,9 +1,11 @@
 package fr.dauphine.mido.doctophine.controller;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +32,9 @@ public class CalendarController extends AbstractController{
 	private int year;
 	private boolean opNext;
 	private boolean opPrev;
+	private boolean opEnable;
+	private boolean opDisable;
+	private String[] slots;
 	
 	
 	public void init() {
@@ -48,8 +53,16 @@ public class CalendarController extends AbstractController{
 		if(opPrev) {
 			week=getPrevWeek();
 		}
+		if(opEnable) {
+			processEnable();
+		}
+		if(opDisable) {
+			processDisable();
+		}
 	}
 	
+
+
 	private int getNextWeek() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.WEEK_OF_YEAR, week);
@@ -108,36 +121,6 @@ public class CalendarController extends AbstractController{
 		return getLoggedDoctor().getMedicalCenterList();
 	}
 	
-	public List<Appointment> getAppointmentList(){
-		Activity activity = ds.getActivity(getLoggedDoctor(), medicalCenter);
-		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.WEEK_OF_YEAR, week);
-		cal.set(Calendar.YEAR, year);
-		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-		
-		Date startDate = cal.getTime();
-		Date endDate = new Date(startDate.getTime() + MILLIS_IN_WEEK);
-		
-		EntityManagerFactory entityManagerFactory = null;
-        EntityManager entityManager = null;
-        try {
-            entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
-            entityManager = entityManagerFactory.createEntityManager();
-            TypedQuery<Appointment> query = entityManager.createQuery("FROM Appointment WHERE activity = ?1 AND startDate >= :startDate AND endDate <= :endDate", Appointment.class);
-            List<Appointment>abstractEventList = query.setParameter(1, activity).
-            		setParameter("startDate", startDate).
-            		setParameter("endDate", endDate).
-            		getResultList();
-         
-            
-       
-            return abstractEventList;
-        }
-        finally {
-            if ( entityManager != null ) entityManager.close();
-            if ( entityManagerFactory != null ) entityManagerFactory.close();
-        }
-	}
 	
 	public void setOpNext(boolean opNext) {
 		this.opNext = opNext;
@@ -148,9 +131,79 @@ public class CalendarController extends AbstractController{
 	public void setOpPrev(boolean opPrev) {
 		this.opPrev = opPrev;
 	}
+	
+	
+	public void setOpDisable(boolean opDisable) {
+		this.opDisable = opDisable;
+	}
+
+
+	public void setOpEnable(boolean opEnable) {
+		this.opEnable = opEnable;
+	}
 
 	public List<List<AbstractEvent>> getCalendar(){
-		return ds.getCalendar(getAppointmentList(), week, year);
+		return ds.getCalendar(getLoggedDoctor(), medicalCenter, week, year);
+	}
+	
+	
+	public void setSlots(String[] slots) {	
+		this.slots = slots;
+	}
+	
+	
+	public List<Date> getSlotsDateList(){
+		if(slots ==null) {
+			return Collections.emptyList();
+		}
+		List<Date> dates = new ArrayList<>();
+		for(String slotStr : slots) {
+			String[] coord = slotStr.split(" ");
+			int day = Integer.parseInt(coord[1]);
+			int slot = Integer.parseInt(coord[0]);
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.YEAR, year);
+			calendar.set(Calendar.WEEK_OF_YEAR, week);
+			calendar.set(Calendar.DAY_OF_WEEK, day);
+			calendar.set(Calendar.HOUR_OF_DAY, 8+ (int)slot/2);
+			calendar.set(Calendar.MINUTE, slot%2==0?0:30);
+			calendar.set(Calendar.SECOND, 0);
+			
+			dates.add(calendar.getTime());
+		}
+		return dates;
+	}
+	
+	private void processDisable() {
+		List<Date> dates = getSlotsDateList();
+		ds.deleteAvailabilities(dates, medicalCenter, getLoggedDoctor());
+		
+	}
+
+	private void processEnable() {
+		List<Date> dates = getSlotsDateList();
+		ds.addAvailabilities(dates, medicalCenter, getLoggedDoctor());
+	}
+	
+	public int[] getDaysOfWeek() {
+		return ds.getDaysOfWeek();
+	}
+	
+	public List<String> getDayNames(){
+		List<String> dayNames = new ArrayList<>();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.WEEK_OF_YEAR, week);
+		int[] daysOfWeek =  ds.getDaysOfWeek();
+		SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM");
+		for(int i = 0; i < 7; i++) {
+			int day = daysOfWeek[i];
+			calendar.set(Calendar.DAY_OF_WEEK, day);
+			Date date = calendar.getTime();
+			String name = sdf.format(date);
+			dayNames.add(name);
+		}
+		return dayNames;
 	}
 	
 }
