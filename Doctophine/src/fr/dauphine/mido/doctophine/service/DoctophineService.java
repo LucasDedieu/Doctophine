@@ -350,6 +350,30 @@ public class DoctophineService {
             if ( entityManagerFactory != null ) entityManagerFactory.close();
         }
 	}
+
+	public List<Appointment> getNextAppointments(Patient patient) {
+		EntityManagerFactory entityManagerFactory = null;
+        EntityManager entityManager = null;
+        try {
+            entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
+            entityManager = entityManagerFactory.createEntityManager();
+            Date date = new Date();
+            TypedQuery<Appointment> query = entityManager.createQuery("FROM Appointment WHERE patient = :patient AND startDate >= :date ORDER BY startDate", Appointment.class);
+            List<Appointment> appointmentList = query.setParameter("patient",patient).setParameter("date",date).getResultList();
+
+
+
+
+            if(appointmentList == null || appointmentList.size() == 0) {
+            	return null;
+            }
+            return appointmentList;
+        }
+        finally {
+            if ( entityManager != null ) entityManager.close();
+            if ( entityManagerFactory != null ) entityManagerFactory.close();
+        }
+	}
 	
 	
 }
