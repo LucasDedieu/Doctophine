@@ -4,22 +4,10 @@
 <%@page import="fr.dauphine.mido.doctophine.model.Appointment"%>
 <%@page import="fr.dauphine.mido.doctophine.model.AbstractEvent"%>
 <%@page import="fr.dauphine.mido.doctophine.model.MedicalCenter"%>
-<jsp:useBean id="controller" scope="page"
-	class="fr.dauphine.mido.doctophine.controller.CalendarController">
-	<%
-		
-	%><jsp:setProperty name="controller" property="request"
-		value="<%=request%>" />
-	<%
-		
-	%><jsp:setProperty name="controller" property="response"
-		value="<%=response%>" />
-	<%
-		
-	%><jsp:setProperty name="controller" property="*" />
-	<%
-		
-	%>
+<jsp:useBean id="controller" scope="page" class="fr.dauphine.mido.doctophine.controller.CalendarController">
+	<jsp:setProperty name="controller" property="request" value="<%=request%>" />
+	<jsp:setProperty name="controller" property="response" value="<%=response%>" />
+	<jsp:setProperty name="controller" property="*" />
 </jsp:useBean>
 <%
 	controller.init();
@@ -29,6 +17,7 @@
 %>
 <%@ include file="/fragments/header.jspf"%>
 <link href="css/calendar.css" rel="stylesheet">
+<link rel="stylesheet" href="css/tablecellsselection.css">
 
 <div class="calendar">
 
@@ -138,9 +127,14 @@
 		<input type='hidden' name='week' value="<%=controller.getWeek()%>" />
 	</form>
 </div>
+<script src="js/tablecellsselection.js"></script>
 <script>
 $(document).ready(function(){
   $('[data-toggle="popover"]').popover();   
+  $('table').tableCellsSelection();
 });
+
+
+
 </script>
 <%@ include file="/fragments/footer.jspf"%>
