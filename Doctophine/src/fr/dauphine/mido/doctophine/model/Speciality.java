@@ -27,4 +27,8 @@ public class Speciality {
 		return id;
 	}
 
+	@Override
+	public String toString() {
+		return getName();
+	}
 }

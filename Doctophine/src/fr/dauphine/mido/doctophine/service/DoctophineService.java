@@ -268,7 +268,7 @@ public class DoctophineService {
         try {
             entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
             entityManager = entityManagerFactory.createEntityManager();
-            TypedQuery<Appointment> query1 = entityManager.createQuery("FROM Appointment WHERE activity = :activity AND startDate >= :startDate AND endDate <= :endDate", Appointment.class);
+            TypedQuery<Appointment> query1 = entityManager.createQuery("FROM Appointment WHERE activity = :activity AND startDate >= :startDate AND endDate <= :endDate AND isCancelled = FALSE", Appointment.class);
             List<Appointment>list1 = query1
             		.setParameter("activity", activity)
             		.setParameter("startDate", startDate)
@@ -358,7 +358,7 @@ public class DoctophineService {
             entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
             entityManager = entityManagerFactory.createEntityManager();
             Date date = new Date();
-            TypedQuery<Appointment> query = entityManager.createQuery("FROM Appointment WHERE patient = :patient AND startDate >= :date ORDER BY startDate", Appointment.class);
+            TypedQuery<Appointment> query = entityManager.createQuery("FROM Appointment WHERE patient = :patient AND startDate >= :date AND isCancelled = FALSE ORDER BY startDate", Appointment.class);
             List<Appointment> appointmentList = query.setParameter("patient",patient).setParameter("date",date).getResultList();
 
 
@@ -373,6 +373,48 @@ public class DoctophineService {
             if ( entityManager != null ) entityManager.close();
             if ( entityManagerFactory != null ) entityManagerFactory.close();
         }
+	}
+
+	public List<Appointment> getPreviousAppointments(Patient patient) {
+		EntityManagerFactory entityManagerFactory = null;
+        EntityManager entityManager = null;
+        try {
+            entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
+            entityManager = entityManagerFactory.createEntityManager();
+            Date date = new Date();
+            TypedQuery<Appointment> query = entityManager.createQuery("FROM Appointment WHERE patient = :patient AND startDate < :date AND isCancelled = FALSE ORDER BY startDate", Appointment.class);
+            List<Appointment> appointmentList = query.setParameter("patient",patient).setParameter("date",date).getResultList();
+
+
+
+
+            if(appointmentList == null || appointmentList.size() == 0) {
+            	return null;
+            }
+            return appointmentList;
+        }
+        finally {
+            if ( entityManager != null ) entityManager.close();
+            if ( entityManagerFactory != null ) entityManagerFactory.close();
+        }
+	}
+
+	public void cancelAppointment(int id) {
+		EntityManagerFactory entityManagerFactory = null;
+        EntityManager entityManager = null;
+        try {
+            entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+            Appointment app = entityManager.find(Appointment.class, id);
+            app.setCancelled(true);
+            entityManager.getTransaction().commit();
+        }
+        finally {
+            if ( entityManager != null ) entityManager.close();
+            if ( entityManagerFactory != null ) entityManagerFactory.close();
+        }
+		
 	}
 	
 	

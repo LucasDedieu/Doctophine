@@ -29,5 +29,10 @@ public class PatientController extends AbstractController {
 	public List<Appointment> getNextAppointments(){
 		return ds.getNextAppointments(getLoggedPatient());
 	}
+	
+	public List<Appointment> getPreviousAppointments(){
+		return ds.getPreviousAppointments(getLoggedPatient());
+	}
+	
 
 }

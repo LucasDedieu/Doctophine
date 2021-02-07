@@ -27,6 +27,9 @@ public class Appointment extends AbstractEvent {
 	
 	@Column(name="is_video")
 	private boolean isVideo;
+	
+	@Column(name="is_cancelled")
+	private boolean isCancelled;
 
 	public Patient getPatient() {
 		return patient;
@@ -50,6 +53,14 @@ public class Appointment extends AbstractEvent {
 
 	public void setVideo(boolean isVideo) {
 		this.isVideo = isVideo;
+	}
+	
+	public boolean isCancelled() {
+		return isCancelled;
+	}
+
+	public void setCancelled(boolean isCancelled) {
+		this.isCancelled = isCancelled;
 	}
 
 	public int getId() {

@@ -47,4 +47,8 @@ public class MedicalCenter {
 		return name;
 	}
 
+	public String getMapsURL() {
+		String place = address.replaceAll("[ \\t\\n\\r]", "+");
+		return "https://www.google.com/maps/place/"+place;
+	}
 }

@@ -9,12 +9,11 @@
 	<jsp:setProperty name="controller" property="response" value="<%=response%>" />
 	<jsp:setProperty name="controller" property="*" />
 </jsp:useBean>
-<%
-	controller.init();
-%>
-<%
-	List<List<AbstractEvent>> calendar = controller.getCalendar();
-%>
+
+<%controller.init();%>
+
+<%List<List<AbstractEvent>> calendar = controller.getCalendar();%>
+
 <%@ include file="/fragments/header.jspf"%>
 <link href="css/calendar.css" rel="stylesheet">
 <link rel="stylesheet" href="css/tablecellsselection.css">

@@ -1,0 +1,99 @@
+
+.patient{
+	background-color: #FFF;
+	margin:auto;
+	padding:40px;
+	width:70%;
+	
+}
+
+.patient H1{
+	margin-bottom:40px;
+	text-align:center;
+}
+
+.patient H2{
+	margin-bottom:20px;
+}
+
+
+.patient .card{
+	margin-bottom:20px;
+	margin-right:20px;
+	box-shadow: 0 2px 14px rgb(67 95 113 / 30%),0 4px 14px rgb(67 95 113 / 30%);
+	
+} 
+
+.patient .cards{
+	display:flex;
+	align-items:flex-start;
+
+} 
+
+.patient .doctor-name{
+	font-weight:bold;
+	
+}
+
+.patient .card-header{
+	font-weight:bold;	
+	background-color: #0596DE;
+	color: #FFF;
+}
+
+.patient .mc-name{
+	font-weight:bold;	
+}
+
+
+.patient .card A{
+	color: #0596DE;
+}
+
+.patient .next-appointments{
+	margin-bottom:70px;
+}
+
+.patient .previous-appointments .card-header{
+	font-weight:bold;	
+	background-color: #435f71;
+	color: #FFF;
+}
+
+.patient .list-group-item .icon{
+	color:#666;
+}
+
+
+.patient .search .text{
+	width:500px;
+	display:inline;
+}
+
+.patient .search .location{
+	width:200px;
+	display:inline;
+}
+
+.patient .search .btn{
+	display:inline;
+}
+
+.patient .search{
+	margin-bottom:80px;
+	
+}
+
+.patient .search FORM{
+	display:flex;
+
+}
+
+.patient .search INPUT{
+	margin-rigth:5px;
+}
+
+.patient .card .cancel-button{
+	text-align:center;
+}
+
