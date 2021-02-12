@@ -1,0 +1,28 @@
+<h2>Prendre un rendez-vous :</h2>
+<form action="search.jsp">	
+	<div class="form-row">
+		<div class="form-group col-md-4">
+			<input type="text" placeholder="Nom du professionnel de santé" value="<%=controller.getName()%>" id="name" name="name" class="form-control"/>
+		</div>
+		<div class="form-group col-md-3">
+			<select class="form-control" id="speciality" name="speciality" >
+				<option value="">Toutes les specialités</option>
+				<%for(Speciality spe : controller.getAllSpecialities()){ %>
+					<option value="<%=spe.getId()%>"><%=spe.getName()%></option>
+				<%} %>
+			</select>
+		</div>
+		<div class="form-group col-md-3">
+			<select class="form-control" id="medicalCenter" name="medicalCenter">
+				<option value="">Tous les centres medicaux</option>
+				<%for(MedicalCenter mc : controller.getAllMedicalCenters()){ %>
+					<option value="<%=mc.getId()%>"><%=mc.getName()%></option>
+				<%} %>
+			</select>
+		</div>
+		<div class="form-group col-md-2">
+			<button type="submit" name="opSearch" value="true" class="btn btn-primary btn-search">Rechercher</button>
+		</div>
+	</div>	 
+		
+</form>

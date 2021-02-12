@@ -34,5 +34,7 @@ public class PatientController extends AbstractController {
 		return ds.getPreviousAppointments(getLoggedPatient());
 	}
 	
-
+	public String getName() {
+		return"";
+	}
 }

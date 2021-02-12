@@ -26,7 +26,6 @@ import fr.dauphine.mido.doctophine.service.DoctophineService;
 
 public class CalendarController extends AbstractController{
 	private static final Long MILLIS_IN_WEEK = 6*24*60*60*1000L;
-	private DoctophineService ds = DoctophineService.getInstance();
 	private MedicalCenter medicalCenter;
 	private int week;
 	private int year;
@@ -48,10 +47,13 @@ public class CalendarController extends AbstractController{
 			medicalCenter = getDefaultMedicalCenter();
 		}
 		if(opNext) {
-			week = getNextWeek();
+			//week = getNextWeek();
+			performNext();
+			
 		}
 		if(opPrev) {
-			week=getPrevWeek();
+			//week=getPrevWeek();
+			performPrev();
 		}
 		if(opEnable) {
 			processEnable();
@@ -59,8 +61,25 @@ public class CalendarController extends AbstractController{
 		if(opDisable) {
 			processDisable();
 		}
+		
 	}
 	
+	
+	private void performNext(){
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.WEEK_OF_YEAR, week);
+		calendar.add(Calendar.WEEK_OF_YEAR, 1);
+		week = calendar.get(Calendar.WEEK_OF_YEAR);
+		year = calendar.get(Calendar.YEAR);
+	}
+	
+	private void performPrev(){
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.WEEK_OF_YEAR, week);
+		calendar.add(Calendar.WEEK_OF_YEAR, -1);
+		week= calendar.get(Calendar.WEEK_OF_YEAR);
+		year = calendar.get(Calendar.YEAR);
+	}
 
 
 	private int getNextWeek() {
@@ -195,7 +214,7 @@ public class CalendarController extends AbstractController{
 		calendar.set(Calendar.YEAR, year);
 		calendar.set(Calendar.WEEK_OF_YEAR, week);
 		int[] daysOfWeek =  ds.getDaysOfWeek();
-		SimpleDateFormat sdf = new SimpleDateFormat("EEEE dd MMMM");
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE dd MMM YYYY");
 		for(int i = 0; i < 7; i++) {
 			int day = daysOfWeek[i];
 			calendar.set(Calendar.DAY_OF_WEEK, day);

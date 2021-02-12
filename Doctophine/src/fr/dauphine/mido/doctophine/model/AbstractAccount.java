@@ -39,6 +39,18 @@ public abstract class AbstractAccount {
 	@Column(name="is_admin")
 	private boolean isAdmin;
 	
+	@Column(name="photo")
+	private String photo;
+	
+	
+	
+	
+	public String getPhoto() {
+		return photo;
+	}
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
 	
 	public String getFirstName() {
 		return firstName;

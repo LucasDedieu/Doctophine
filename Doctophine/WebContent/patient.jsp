@@ -1,6 +1,7 @@
 <%@page import="fr.dauphine.mido.doctophine.model.Doctor"%>
 <%@page import="java.text.SimpleDateFormat"%>
 <%@page import="fr.dauphine.mido.doctophine.model.Availability"%>
+<%@page import="fr.dauphine.mido.doctophine.model.Speciality"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Calendar"%>
 <%@page import="fr.dauphine.mido.doctophine.model.Appointment"%>
@@ -19,7 +20,7 @@
 
 <%@ include file="/fragments/header.jspf"%>
 
-<link href="css/patient.css" rel="stylesheet">
+<link href="css/patient.css" rel="stylesheet">  
 
 
 
@@ -31,15 +32,7 @@
 	<h1>Bonjour <%=controller.getLoggedPatient().getFirstName() %> !</h1>
 	
 	
-	<div class="search">
-		<h2>Prendre un rendez-vous :</h2>
-		<form action="search.jsp">		
-				<input type="text" placeholder="Medecin, Etablissement, Spécialité, ..." name="text" class="form-control form-control-lg text"/>
-				<input type="text" placeholder="Où ?" name="location" class="form-control form-control-lg location"/>
-				<input type="submit" name="opSearch" value="Rechercher" class="btn btn-primary btn-lg opSearch">
-		</form>
-	
-	</div>
+	<%@ include file="/fragments/searchForm.jspf"%>
 	
 	
 	
@@ -63,15 +56,20 @@
 				 </div>
 				  <ul class="list-group list-group-flush">
 				    <li class="list-group-item">
-					    <div class="doctor-name"><%=doctor %></div>
-					    <div class="doctor-speciality"><%=app.getActivity().getSpeciality().getName() %></div>
-				    
+				    	<div class="photo">
+				 			<img alt="photo" class="rounded-circle" src="<%=doctor.getPhoto()%>"/>
+				 		</div>	
+				 		<div class="info">
+					    	<div class="doctor-name"><%=doctor %></div>
+					   	 	<div class="doctor-speciality"><%=app.getActivity().getSpeciality().getName() %></div>
+					    </div>
 				    </li>
 				    <li class="list-group-item">
 				    	<div class="mc-name"><%=medicalCenter %></div>
 				    	<div class="mc-address">
 				    		<span class="icon icon-location"></span>
-				    		<a target="_blank" href="<%=medicalCenter.getMapsURL()%>"><%=medicalCenter.getAddress() %> </a></div>
+				    		<a target="_blank" href="<%=medicalCenter.getMapsURL()%>"><%=medicalCenter.getAddress() %> </a>
+				    	</div>
 				    	<div class="mc-phone">
 				    		<span class="icon icon-phone"></span>
 				    		<%=medicalCenter.getPhone() %>
@@ -103,9 +101,13 @@
 				 </div>
 				  <ul class="list-group list-group-flush">
 				    <li class="list-group-item">
-					    <div class="doctor-name"><%=doctor %></div>
-					    <div class="doctor-speciality"><%=app.getActivity().getSpeciality().getName() %></div>
-				    
+					    <div class="photo">
+				 			<img alt="photo" class="rounded-circle" src="<%=doctor.getPhoto()%>"/>
+				 		</div>	
+				 		<div class="info">
+					    	<div class="doctor-name"><%=doctor %></div>
+					   	 	<div class="doctor-speciality"><%=app.getActivity().getSpeciality().getName() %></div>
+					    </div>
 				    </li>
 				    <li class="list-group-item">
 				    	<div class="mc-name"><%=medicalCenter %></div>

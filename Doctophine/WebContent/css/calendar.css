@@ -35,3 +35,20 @@
 	text-align:right;
 }
 
+.calendar TD INPUT{
+	display:none;
+}
+
+
+.calendar .tcs .tcs-selected:not(.sel-from) {
+    border: 1px solid #ccc; 
+    background-color: #6d7788 !important;
+}
+
+.calendar .btn-week {
+    color:#333;
+}
+
+.calendar .week {
+    margin-left:100px;
+}

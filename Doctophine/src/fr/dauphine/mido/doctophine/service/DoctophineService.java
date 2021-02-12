@@ -2,6 +2,7 @@ package fr.dauphine.mido.doctophine.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -160,6 +161,10 @@ public class DoctophineService {
 		return getData(Doctor.class, id);
 	}
 	
+	public Activity getActivity(int id) {
+		return getData(Activity.class, id);
+	}
+	
 	public Patient getPatient(int id) {
 		return getData(Patient.class, id);
 	}
@@ -176,6 +181,9 @@ public class DoctophineService {
 		return getData(MedicalCenter.class, id);
 	}
 	
+	public Speciality getSpeciality(int id) {
+		return getData(Speciality.class, id);
+	}
 	
 	public Activity getActivity(Doctor doctor, MedicalCenter medicalCenter) {
 		EntityManagerFactory entityManagerFactory = null;
@@ -259,9 +267,11 @@ public class DoctophineService {
 		cal.set(Calendar.WEEK_OF_YEAR, week);
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
 		
 		Date startDate = cal.getTime();
-		Date endDate = new Date(startDate.getTime() + MILLIS_IN_WEEK);
+		Date endDate = new Date(startDate.getTime() + MILLIS_IN_WEEK+(23*60*60*1000));//sunday 23h
 		
 		EntityManagerFactory entityManagerFactory = null;
         EntityManager entityManager = null;
@@ -417,5 +427,152 @@ public class DoctophineService {
 		
 	}
 	
+	
+	
+	
+
+	public List<Activity> findActivitiesByDoctorName(String name) {
+		EntityManagerFactory entityManagerFactory = null;
+        EntityManager entityManager = null;
+        try {
+            entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
+            entityManager = entityManagerFactory.createEntityManager();
+            TypedQuery<Activity> query = entityManager.createQuery("FROM Activity WHERE lower(doctor.lastName) like lower(concat('%', :name, '%'))", Activity.class);
+            List<Activity> activityList = query.setParameter("name",name).getResultList();
+
+            return activityList;
+        }
+        finally {
+            if ( entityManager != null ) entityManager.close();
+            if ( entityManagerFactory != null ) entityManagerFactory.close();
+        }
+	}
+
+	
+	
+	public List<Activity> findActivities(String name, Speciality speciality, MedicalCenter medicalCenter) {
+		if((name==null || name.length()==0) && speciality==null && medicalCenter==null) {
+			return Collections.emptyList();
+		}
+		EntityManagerFactory entityManagerFactory = null;
+        EntityManager entityManager = null;
+        try {
+            entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
+            entityManager = entityManagerFactory.createEntityManager();
+            StringBuilder sb = new StringBuilder();
+            if(speciality!=null) {
+            	sb.append("speciality = :speciality");
+            }
+            if(medicalCenter!=null) {
+            	if(sb.length()>0) {
+            		sb.append(" AND ");
+            	}
+            	sb.append("medicalCenter = :medicalCenter");
+            }
+            if(name!=null) {
+            	if(sb.length()>0) {
+            		sb.append(" AND ");
+            	}
+            	sb.append("lower(doctor.lastName) like lower(concat('%', :name, '%'))");
+            }
+            
+            TypedQuery<Activity> query = entityManager.createQuery("FROM Activity WHERE "+sb.toString(), Activity.class);
+            if(speciality!=null) {
+            	query.setParameter("speciality",speciality);
+            }
+            if(medicalCenter!=null) {
+            	query.setParameter("medicalCenter",medicalCenter);
+            }
+            if(name!=null) {
+            	query.setParameter("name",name);
+            }
+            List<Activity> activityList = query.getResultList();
+
+            return activityList;
+        }
+        finally {
+            if ( entityManager != null ) entityManager.close();
+            if ( entityManagerFactory != null ) entityManagerFactory.close();
+        }
+	}
+	
+	
+	
+	
+	
+	public List<Speciality> getAllSpecialities() {
+		EntityManagerFactory entityManagerFactory = null;
+        EntityManager entityManager = null;
+        try {
+            entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
+            entityManager = entityManagerFactory.createEntityManager();
+            TypedQuery<Speciality> query = entityManager.createQuery("FROM Speciality ORDER BY name", Speciality.class);
+            List<Speciality> specialities= query.getResultList();
+
+            return specialities;
+        }
+        finally {
+            if ( entityManager != null ) entityManager.close();
+            if ( entityManagerFactory != null ) entityManagerFactory.close();
+        }
+	}
+
+	public List<MedicalCenter> getAllMedicalCenters() {
+		EntityManagerFactory entityManagerFactory = null;
+        EntityManager entityManager = null;
+        try {
+            entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
+            entityManager = entityManagerFactory.createEntityManager();
+            TypedQuery<MedicalCenter> query = entityManager.createQuery("FROM MedicalCenter ORDER BY name", MedicalCenter.class);
+            List<MedicalCenter> medicalCenters= query.getResultList();
+
+            return medicalCenters;
+        }
+        finally {
+            if ( entityManager != null ) entityManager.close();
+            if ( entityManagerFactory != null ) entityManagerFactory.close();
+        }
+	}
+
+
+	
+	
+	public void addAppointment(Date startDate, int activityId, int patientId, String description) {
+		EntityManagerFactory entityManagerFactory = null;
+        EntityManager entityManager = null;
+        try {
+
+            entityManagerFactory = Persistence.createEntityManagerFactory("Doctophine");
+            entityManager = entityManagerFactory.createEntityManager();
+            entityManager.getTransaction().begin();
+
+            Activity activity = entityManager.find(Activity.class, activityId);
+            Patient patient = entityManager.find(Patient.class, patientId);
+            
+            
+            Appointment appointment = buildAppointment(startDate, activity, patient, description);
+        	entityManager.persist(appointment);
+        	
+      	
+            entityManager.getTransaction().commit();
+
+        }
+        finally {
+            if ( entityManager != null ) entityManager.close();
+            if ( entityManagerFactory != null ) entityManagerFactory.close();
+        }
+	}
+	
+	private Appointment buildAppointment(Date startDate, Activity activity, Patient patient, String description) {
+		Appointment apppointment = new Appointment();
+		apppointment.setPatient(patient);
+		apppointment.setStartDate(startDate);
+		apppointment.setEndDate(new Date(startDate.getTime()+30*MILLIS_IN_MIN));
+		apppointment.setActivity(activity);
+		apppointment.setDescription(description);
+		return apppointment;
+		
+	}
+
 	
 }

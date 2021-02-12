@@ -5,7 +5,6 @@ import java.io.IOException;
 import fr.dauphine.mido.doctophine.service.DoctophineService;
 
 public class AppointmentController extends AbstractController {
-	private DoctophineService ds = DoctophineService.getInstance();
 	private int id;
 	private boolean opCancel;
 	

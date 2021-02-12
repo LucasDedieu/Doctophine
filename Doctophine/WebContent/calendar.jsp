@@ -13,6 +13,7 @@
 <%controller.init();%>
 
 <%List<List<AbstractEvent>> calendar = controller.getCalendar();%>
+<%MedicalCenter currentMedicalCenter = controller.getCurrentMedicalCenter(); %>
 
 <%@ include file="/fragments/header.jspf"%>
 <link href="css/calendar.css" rel="stylesheet">
@@ -32,26 +33,24 @@
 
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
 					<ul class="navbar-nav me-auto mb-2 mb-lg-0">
-						<li class="nav-item"><select name="medicalCenter"
-							class="form-select">
-								<%
-										for (MedicalCenter medicalCenter : controller.getMedicalCenterList()) {
-									%>
-								<option value="<%=medicalCenter.getId()%>"><%=medicalCenter%></option>
-								<%
-										}
-									%>
-						</select></li>
 						<li class="nav-item">
-							<button name='opPrev' value='true' class="btn btn-default">&lt;</button>
+						<select name="medicalCenter" class="form-select form-control medical-center-chooser">
+								<%for (MedicalCenter medicalCenter : controller.getMedicalCenterList()) {%>
+									<option value="<%=medicalCenter.getId()%>"  <%=medicalCenter.getId()==currentMedicalCenter.getId()?"selected":"" %>><%=medicalCenter%></option>
+								<%}%>
+						</select></li>
+						<li class="nav-item week">
+							<button name='opPrev' value='true' class="btn btn-link btn-light btn-week"><span class="icon icon-backward2"></span></button>
 							Semaine <%=controller.getWeek()%>
-							<button name='opNext' value='true' class="btn btn-default">&gt;</button>
+							<button name='opNext' value='true' class="btn btn-link btn-light btn-week"><span class="icon icon-forward3"></span></button>
 						</li> 
 					</ul>
-					<ul class="navbar-nav float-right">
+					<ul class="navbar-nav float-right ml-auto">
 						<li class="nav-item">
-							<button name='opEnable' value='true' class="btn btn-default">Activer</button>
-							<button name='opDisable' value='true' class="btn btn-default">Desactiver</button>
+							<%--<button name='opEnable' value='true' class="btn btn-default enable-btn">Activer</button>
+							<button name='opDisable' value='true' class="btn btn-default disable-btn">Desactiver</button> --%>
+							<a href="#" class="btn btn-outline-success enable-btn"><span class="icon icon-checkmark"></span> Activer</a>
+							<a href="#" class="btn btn-outline-danger disable-btn"><span class="icon icon-cross"></span> Desactiver</a>
 						</li>
 					</ul>
 					
@@ -98,7 +97,9 @@
 						Appointment appointment = (Appointment)event;
 						String patient = appointment.getPatient().getFullName();
 						String description = appointment.getDescription();
-						
+						if(description==null){
+							description="";
+						}
 					
 						tdAttr = "data-trigger='hover' data-toggle='popover' title=\""+patient+"\" data-content=\""+description+"\"";
 					}
@@ -109,9 +110,9 @@
 					<%if (isAppointment) {%>
 					 RDV 
 					 <%} else if (isAvailability) {%> 
-					  <input type="checkbox" name="slots" value="<%=slot +" "+(day+1)%>"/>Libre 
+					  <input type="checkbox" name="slots" value="<%=slot +" "+(day+1)%>"/><span class="icon icon-checkmark"></span> 
 					 <%} else {%> 
-					 <input type="checkbox" name="slots" value="<%=slot+" "+(day+1)%>"/>X
+					 <input type="checkbox" name="slots" value="<%=slot+" "+(day+1)%>"/><span class="icon icon-cross"></span> 
 					<%}%>
 				</td>
 				<%
@@ -124,16 +125,11 @@
 		</table>
 		<%--champs caché qui contient current week --%>
 		<input type='hidden' name='week' value="<%=controller.getWeek()%>" />
+		<%--champs caché qui contient l'année --%>
+		<input type='hidden' name='year' value="<%=controller.getYear()%>" />
 	</form>
 </div>
 <script src="js/tablecellsselection.js"></script>
-<script>
-$(document).ready(function(){
-  $('[data-toggle="popover"]').popover();   
-  $('table').tableCellsSelection();
-});
+<script src="js/calendar.js"></script>
 
-
-
-</script>
 <%@ include file="/fragments/footer.jspf"%>

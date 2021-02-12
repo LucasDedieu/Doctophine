@@ -1,3 +1,37 @@
 BODY {
 	background-color: #EEF2F6;
 }
+
+.card-photo IMG{
+	width:60px;
+}
+
+.card-doctor .card-info{
+	margin-left:80px;
+}
+
+.card-doctor .card-photo{
+	float:left;
+}
+
+.card-doctor{
+	width:400px;
+}
+
+.card{
+	margin-bottom:20px;
+	margin-right:20px;
+	box-shadow: 0 2px 14px rgb(67 95 113 / 15%),0 4px 14px rgb(67 95 113 / 15%);
+	transition:.3s;
+	transform-style:preserve-3D;
+} 
+
+.card:hover{
+	box-shadow: 0 2px 14px rgb(67 95 113 / 30%),0 4px 14px rgb(67 95 113 / 30%);
+} 
+
+.cards{
+	display:flex;
+	align-items:flex-start;
+
+} 

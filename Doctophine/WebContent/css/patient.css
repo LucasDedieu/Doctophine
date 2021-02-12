@@ -17,13 +17,6 @@
 }
 
 
-.patient .card{
-	margin-bottom:20px;
-	margin-right:20px;
-	box-shadow: 0 2px 14px rgb(67 95 113 / 30%),0 4px 14px rgb(67 95 113 / 30%);
-	
-} 
-
 .patient .cards{
 	display:flex;
 	align-items:flex-start;
@@ -95,5 +88,22 @@
 
 .patient .card .cancel-button{
 	text-align:center;
+}
+
+.patient .search .btn-search{
+	margin-left:10px;
+	margin-right:40px;
+}
+
+.patient .photo IMG{
+	width:40px;
+}
+
+.patient .photo {
+	float:left;
+}
+
+.patient .info {
+	margin-left:50px;
 }
 
