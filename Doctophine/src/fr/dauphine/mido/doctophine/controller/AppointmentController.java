@@ -2,6 +2,10 @@ package fr.dauphine.mido.doctophine.controller;
 
 import java.io.IOException;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import fr.dauphine.mido.doctophine.service.CalendarService;
 import fr.dauphine.mido.doctophine.service.DoctophineService;
 
 public class AppointmentController extends AbstractController {
@@ -9,7 +13,12 @@ public class AppointmentController extends AbstractController {
 	private String from;
 	private boolean opCancel;
 	
+	CalendarService cs;
 	
+	public AppointmentController() throws NamingException {
+		InitialContext ic = new InitialContext();
+		cs = (CalendarService)ic.lookup("java:module/CalendarService");
+	}
 
 	public void init() throws IOException {
 		if(opCancel) {
@@ -32,7 +41,7 @@ public class AppointmentController extends AbstractController {
 	}
 
 	private void performCancel(String from) throws IOException {
-		ds.cancelAppointment(id);
+		cs.cancelAppointment(id);
 		if(from.equals("patient")) {
 			response.sendRedirect("patient.jsp");
 		}

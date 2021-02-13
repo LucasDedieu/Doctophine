@@ -8,11 +8,16 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import fr.dauphine.mido.doctophine.model.AbstractEvent;
 import fr.dauphine.mido.doctophine.model.Activity;
 import fr.dauphine.mido.doctophine.model.Doctor;
 import fr.dauphine.mido.doctophine.model.MedicalCenter;
 import fr.dauphine.mido.doctophine.model.Patient;
+import fr.dauphine.mido.doctophine.service.CalendarService;
+import fr.dauphine.mido.doctophine.service.EntityService;
 
 public class MakeAppointmentController extends AbstractController {
 	private static final Long MILLIS_IN_WEEK = 6*24*60*60*1000L;
@@ -22,11 +27,19 @@ public class MakeAppointmentController extends AbstractController {
 	private boolean opNext;
 	private boolean opPrev;
 	private boolean opSelect;
-	
-
-
 	private String description;
 	private String slotStr;
+	
+	
+	CalendarService cs;
+	EntityService es;
+	
+	
+	public MakeAppointmentController() throws NamingException {
+		InitialContext ic = new InitialContext();
+		cs = (CalendarService)ic.lookup("java:module/CalendarService");
+		es = (EntityService)ic.lookup("java:module/EntityService");
+	}
 	
 	
 	public void init() throws IOException {
@@ -64,7 +77,7 @@ public class MakeAppointmentController extends AbstractController {
 	}
 
 	public void setActivity(int id) {
-		this.activity = ds.getActivity(id);
+		this.activity = es.getActivity(id);
 	}
 	
 	public void setDescription(String description) {
@@ -92,7 +105,7 @@ public class MakeAppointmentController extends AbstractController {
 	}
 	
 	public Patient getLoggedPatient() {
-		return ds.getPatient(1);//FIXME
+		return es.getPatient(1);//FIXME
 	}
 	
 	public int getWeek() {
@@ -122,7 +135,7 @@ public class MakeAppointmentController extends AbstractController {
 
 
 	public List<List<AbstractEvent>> getCalendar(){
-		return ds.getCalendar(activity.getDoctor(), activity.getMedicalCenter(), week, year);
+		return cs.getCalendar(activity.getDoctor(), activity.getMedicalCenter(), week, year);
 	}
 	
 	
@@ -154,7 +167,7 @@ public class MakeAppointmentController extends AbstractController {
 	
 
 	public int[] getDaysOfWeek() {
-		return ds.getDaysOfWeek();
+		return cs.getDaysOfWeek();
 	}
 	
 	public List<String> getDayNames(){
@@ -162,7 +175,7 @@ public class MakeAppointmentController extends AbstractController {
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, year);
 		calendar.set(Calendar.WEEK_OF_YEAR, week);
-		int[] daysOfWeek =  ds.getDaysOfWeek();
+		int[] daysOfWeek =  cs.getDaysOfWeek();
 		SimpleDateFormat sdf = new SimpleDateFormat("EEE dd MMM YYYY");
 		for(int i = 0; i < 7; i++) {
 			int day = daysOfWeek[i];
@@ -181,7 +194,7 @@ public class MakeAppointmentController extends AbstractController {
 		if(date==null) {
 			return;
 		}
-		ds.addAppointment(date, activity.getId(), getLoggedPatient().getId(), description);
+		cs.addAppointment(date, activity.getId(), getLoggedPatient().getId(), description);
 		response.sendRedirect("patient.jsp");
 		
 		

@@ -25,12 +25,5 @@ public class AbstractController {
 			this.response = response;
 		}
 	}
-	
-	public List<Speciality> getAllSpecialities(){
-		return ds.getAllSpecialities();
-	}
-	
-	public List<MedicalCenter> getAllMedicalCenters(){
-		return ds.getAllMedicalCenters();
-	}
+
 }

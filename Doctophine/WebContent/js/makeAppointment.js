@@ -9,7 +9,7 @@ const init = () => {
 
 const makeAppointment = (event) => {
 	event.preventDefault();
-	let text = prompt("Etes vous sûr de prendre ce rendez-vous ? Si oui, entrez un motif :");	
+	let text = prompt("Etes vous sur de prendre ce rendez-vous ? Si oui, entrez un motif :");	
 	if(text){
 		let href = event.currentTarget.getAttribute('href');
 		href +="&description="+encodeURI(text);

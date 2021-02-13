@@ -1,28 +1,20 @@
 package fr.dauphine.mido.doctophine.controller;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.persistence.TypedQuery;
+import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import fr.dauphine.mido.doctophine.model.AbstractEvent;
-import fr.dauphine.mido.doctophine.model.Activity;
-import fr.dauphine.mido.doctophine.model.Appointment;
 import fr.dauphine.mido.doctophine.model.Doctor;
 import fr.dauphine.mido.doctophine.model.MedicalCenter;
-import fr.dauphine.mido.doctophine.service.DoctophineService;
+import fr.dauphine.mido.doctophine.service.CalendarService;
 
 public class CalendarController extends AbstractController{
 	private static final Long MILLIS_IN_WEEK = 6*24*60*60*1000L;
@@ -35,6 +27,18 @@ public class CalendarController extends AbstractController{
 	private boolean opDisable;
 	private boolean opCancel;
 	private String[] slots;
+	
+	
+	CalendarService cs;
+	
+	public CalendarController() throws NamingException {
+		InitialContext ic = new InitialContext();
+		cs = (CalendarService)ic.lookup("java:module/CalendarService");
+	}
+	
+	
+	
+	
 	
 	
 	public void init() {
@@ -172,7 +176,7 @@ public class CalendarController extends AbstractController{
 	}
 
 	public List<List<AbstractEvent>> getCalendar(){
-		return ds.getCalendar(getLoggedDoctor(), medicalCenter, week, year);
+		return cs.getCalendar(getLoggedDoctor(), medicalCenter, week, year);
 	}
 	
 	
@@ -205,17 +209,17 @@ public class CalendarController extends AbstractController{
 	
 	private void processDisable() {
 		List<Date> dates = getSlotsDateList();
-		ds.deleteAvailabilities(dates, medicalCenter, getLoggedDoctor());
+		cs.deleteAvailabilities(dates, medicalCenter, getLoggedDoctor());
 		
 	}
 
 	private void processEnable() {
 		List<Date> dates = getSlotsDateList();
-		ds.addAvailabilities(dates, medicalCenter, getLoggedDoctor());
+		cs.addAvailabilities(dates, medicalCenter, getLoggedDoctor());
 	}
 	
 	public int[] getDaysOfWeek() {
-		return ds.getDaysOfWeek();
+		return cs.getDaysOfWeek();
 	}
 	
 	public List<String> getDayNames(){
@@ -223,7 +227,7 @@ public class CalendarController extends AbstractController{
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.YEAR, year);
 		calendar.set(Calendar.WEEK_OF_YEAR, week);
-		int[] daysOfWeek =  ds.getDaysOfWeek();
+		int[] daysOfWeek =  cs.getDaysOfWeek();
 		SimpleDateFormat sdf = new SimpleDateFormat("EEE dd MMM YYYY");
 		for(int i = 0; i < 7; i++) {
 			int day = daysOfWeek[i];
