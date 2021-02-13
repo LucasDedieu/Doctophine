@@ -5,7 +5,12 @@ String title = (String)request.getAttribute("pageTitle");
 if(title == null){
 	title = "Doctophine";
 }
+
+String logoLink = (String)request.getAttribute("logoLink");
+
 %>
+
+
 
 <!DOCTYPE html>
 <html>
@@ -38,7 +43,7 @@ if(title == null){
 	<body>
 	<nav class="navbar  navbar-expand-lg sticky-top navbar-dark bg-dark">
 	<div class="container-fluid">
-  		<a class="navbar-brand" href="#">Doctophine</a>
+  		<a class="navbar-brand" href="<%=logoLink %>">Doctophine</a>
   		<ul class="navbar-nav float-right">
 	  		<li class="nav-item dropdown">
 		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

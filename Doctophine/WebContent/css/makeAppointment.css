@@ -2,17 +2,9 @@
 	background-color:#0dcaf0;
 }
 
-.calendar .availability{
-	background-color:#88b04b;
-}
-
-.calendar .empty{
-	background-color:#dc3545;
-}
 
 .calendar .event{
 	width:10%;
-	color:white;
 	text-align:center;
 	border:1px solid #fff;
 	
@@ -21,7 +13,6 @@
 
 
 .calendar .day TH{
-
 	text-align:center;
 }
 
@@ -51,15 +42,4 @@
 
 .calendar .week {
     margin-left:100px;
-}
-
-.calendar TD.appointment A{
-	color:white;
-	position:absolute;
-	top:0px;
-	right:4px;
-}
-
-.calendar TD.appointment{
-	position:relative;
 }

@@ -1,3 +1,4 @@
+<%@page import="java.util.Date"%>
 <%@page import="fr.dauphine.mido.doctophine.model.Activity"%>
 <%@page import="fr.dauphine.mido.doctophine.model.Doctor"%>
 <%@page import="fr.dauphine.mido.doctophine.model.Availability"%>
@@ -19,6 +20,8 @@ List<List<AbstractEvent>> calendar = controller.getCalendar();
 Activity activity = controller.getCurrentActivity(); 
 Doctor doctor = activity.getDoctor(); 
 %>
+
+<%request.setAttribute("logoLink", "patient.jsp"); %>
 
 
 
@@ -68,6 +71,7 @@ Doctor doctor = activity.getDoctor();
 						int[] days = controller.getDaysOfWeek();
 						//for(int i = 0; i < days.length; i++) { 
 						//	int day = days[i];
+						Date dateNow = new Date(); 
 						for(int day = Calendar.SUNDAY; day <= Calendar.SATURDAY; day++) { %>
 						<%
 							AbstractEvent event = calendar.get(day-1).get(slot);
@@ -76,8 +80,8 @@ Doctor doctor = activity.getDoctor();
 						%>
 						
 							<td class="<%=css%> event" >
-								<%if (isAvailability) {%> 
-								  <a class="btn btn-secondary btn-appointment" href="makeAppointment.jsp?opSelect=true&activity=<%=activity.getId()%>&slot=<%=slot +" "+(day+1)%>&year=<%=controller.getYear() %>&week=<%=controller.getWeek()%>">Libre</a>
+								<%if (isAvailability && (event.getStartDate().compareTo(dateNow)>0)) {%> 
+								  <a class="btn btn-outline-dark btn-appointment" href="makeAppointment.jsp?opSelect=true&activity=<%=activity.getId()%>&slot=<%=slot +" "+(day+1)%>&year=<%=controller.getYear() %>&week=<%=controller.getWeek()%>">Libre</a>
 								 <%} else {%> 
 								 <span>-</span>
 								<%}%>

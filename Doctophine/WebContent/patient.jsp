@@ -18,6 +18,9 @@
 <%List<Appointment> nextAppointments = controller.getNextAppointments();%>
 <%List<Appointment> previousAppointments = controller.getPreviousAppointments();%>
 
+<%request.setAttribute("logoLink", "patient.jsp"); %>
+
+
 <%@ include file="/fragments/header.jspf"%>
 
 <link href="css/patient.css" rel="stylesheet">  
@@ -77,7 +80,7 @@
 				    </li>
 				    <li class="list-group-item">
 				    	<div class="cancel-button">
-				    		<a href="cancelAppointment.jsp?id=<%=app.getId()%>" onClick="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?')" class="btn btn-outline-light btn-sm">Annuler</a>
+				    		<a href="cancelAppointment.jsp?id=<%=app.getId()%>&from=patient" onClick="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?')" class="btn btn-outline-light btn-sm">Annuler</a>
 				    	</div>
 				    </li>
 				  </ul>

@@ -14,15 +14,21 @@
 
 <%List<List<AbstractEvent>> calendar = controller.getCalendar();%>
 <%MedicalCenter currentMedicalCenter = controller.getCurrentMedicalCenter(); %>
+<%request.setAttribute("logoLink", "calendar.jsp"); %>
+
+
+
 
 <%@ include file="/fragments/header.jspf"%>
 <link href="css/calendar.css" rel="stylesheet">
 <link rel="stylesheet" href="css/tablecellsselection.css">
 
+
 <div class="calendar">
 
-
 	 <form action="calendar.jsp">
+	
+	
 	
 
 
@@ -65,28 +71,21 @@
 			<tr class="day">
 				<th></th>
 				
-				<% for(String dayName : controller.getDayNames()){ %>
-			
-				
+				<% for(String dayName : controller.getDayNames()){ %>				
 					<th><%=dayName%></th>
-
-				<%} %>
+				<%}%>
 			</tr>
-			<%
-				for (int slot = 0; slot < 24; slot++) {
-			%>
+			<%for (int slot = 0; slot < 24; slot++){ %>
 			<tr>
 				<td class="hour"><%=8 + (int) (slot / 2)%>h<%=slot % 2 == 0 ? "00" : "30"%>
-
-
+	
+	
 				</td>
 				<%
 				int[] days = controller.getDaysOfWeek();
 				//for(int i = 0; i < days.length; i++) { 
 				//	int day = days[i];
 				for(int day = Calendar.SUNDAY; day <= Calendar.SATURDAY; day++) { 
-				%>
-				<%
 					AbstractEvent event = calendar.get(day-1).get(slot);
 					boolean isAppointment = event instanceof Appointment;
 					boolean isAvailability = event instanceof Availability;
@@ -105,23 +104,21 @@
 					}
 							
 							
-				%>
-				<td class="<%=css%> event" <%=tdAttr%>>
-					<%if (isAppointment) {%>
-					 RDV 
-					 <%} else if (isAvailability) {%> 
-					  <input type="checkbox" name="slots" value="<%=slot +" "+(day+1)%>"/><span class="icon icon-checkmark"></span> 
-					 <%} else {%> 
-					 <input type="checkbox" name="slots" value="<%=slot+" "+(day+1)%>"/><span class="icon icon-cross"></span> 
-					<%}%>
-				</td>
-				<%
-					}
-				%>
+					%>
+					<td class="<%=css%> event" <%=tdAttr%>>
+						<%if (isAppointment) {%>
+						 RDV 
+						 <%Appointment appointment = (Appointment)event; %>
+						 <a href="cancelAppointment.jsp?id=<%=appointment.getId()%>&from=doctor" onClick="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?')" title="Supprimer...">&times;</a>
+						 <%} else if (isAvailability) {%> 
+						  <input type="checkbox" name="slots" value="<%=slot +" "+(day+1)%>"/><span class="icon icon-checkmark"></span> 
+						 <%} else {%> 
+						 <input type="checkbox" name="slots" value="<%=slot+" "+(day+1)%>"/><span class="icon icon-cross"></span> 
+						 <%}%>
+					</td>
+				<%}%>
 			</tr>
-			<%
-				}
-			%>
+			<%}%>
 		</table>
 		<%--champs caché qui contient current week --%>
 		<input type='hidden' name='week' value="<%=controller.getWeek()%>" />

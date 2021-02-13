@@ -10,6 +10,7 @@
 </jsp:useBean>
 <%controller.init();%>
 <% List<Activity> activities = controller.getActivityList();%>
+<%request.setAttribute("logoLink", "patient.jsp"); %>
 
 
 <%@ include file="/fragments/header.jspf"%>

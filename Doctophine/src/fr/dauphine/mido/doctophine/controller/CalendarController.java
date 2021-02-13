@@ -33,6 +33,7 @@ public class CalendarController extends AbstractController{
 	private boolean opPrev;
 	private boolean opEnable;
 	private boolean opDisable;
+	private boolean opCancel;
 	private String[] slots;
 	
 	
@@ -61,10 +62,19 @@ public class CalendarController extends AbstractController{
 		if(opDisable) {
 			processDisable();
 		}
+		if(opCancel) {
+			processCancel();
+		}
 		
 	}
 	
 	
+	private void processCancel() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	private void performNext(){
 		Calendar calendar = Calendar.getInstance();
 		calendar.set(Calendar.WEEK_OF_YEAR, week);
