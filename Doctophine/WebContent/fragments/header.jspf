@@ -41,19 +41,21 @@ String logoLink = (String)request.getAttribute("logoLink");
 		<title><%=title%></title>
 	</head>
 	<body>
-	<nav class="navbar  navbar-expand-lg sticky-top navbar-dark bg-dark">
-	<div class="container-fluid">
-  		<a class="navbar-brand" href="<%=logoLink %>">Doctophine</a>
-  		<ul class="navbar-nav float-right">
-	  		<li class="nav-item dropdown">
-		        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		         <img src="images/profil.png"/>
-		        </a>
-		        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-		          <a class="dropdown-item" href="#">Profil</a>
-		          <a class="dropdown-item" href="#">Se Deconnecter</a>
-		        </div>
-     		 </li>
-  		</ul>
-  		</div>
-	</nav>
+		<nav class="navbar  main-navbar navbar-expand-lg sticky-top">
+		<div class="container-fluid">
+	  		<a class="navbar-brand" href="<%=logoLink %>">Doctophine</a>
+	  		<%if(request.getSession().getAttribute("doctor")!=null || request.getSession().getAttribute("patient")!=null){ %>
+		  		<ul class="navbar-nav float-right">
+			  		<li class="nav-item dropdown">
+				        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				         <img src="images/profil.png"/>
+				        </a>
+				        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+				          <a class="dropdown-item" href="GestionCompteClientController">Profil</a>
+				          <a class="dropdown-item" href="Deconnexion">Se Deconnecter</a>
+				        </div>
+		     		 </li>
+		  		</ul>
+		  	<%} %>
+	  		</div>
+		</nav>

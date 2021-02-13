@@ -1,5 +1,6 @@
 package fr.dauphine.mido.doctophine.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -94,6 +95,18 @@ public class EntityService {
 
 		return medicalCenters;
 
+	}
+
+
+	public List<MedicalCenter> getMedicalCenterList(Doctor doctor){
+
+		TypedQuery<Activity> query = entityManager.createQuery( "FROM Activity WHERE doctor = :doctor", Activity.class);
+		List<Activity> activityList = query.setParameter("doctor", doctor).getResultList();
+		List<MedicalCenter> medicalCenterList= new ArrayList<>();
+		for(Activity activity : activityList) {
+			medicalCenterList.add(activity.getMedicalCenter());
+		}
+		return medicalCenterList;
 	}
 
 

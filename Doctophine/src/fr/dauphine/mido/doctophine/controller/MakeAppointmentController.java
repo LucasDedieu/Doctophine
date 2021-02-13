@@ -105,7 +105,7 @@ public class MakeAppointmentController extends AbstractController {
 	}
 	
 	public Patient getLoggedPatient() {
-		return es.getPatient(1);//FIXME
+		return (Patient)request.getSession().getAttribute("patient");
 	}
 	
 	public int getWeek() {

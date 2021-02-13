@@ -1,3 +1,4 @@
+<%@page import="java.util.Date"%>
 <%@page import="fr.dauphine.mido.doctophine.model.Availability"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.Calendar"%>
@@ -15,6 +16,7 @@
 <%List<List<AbstractEvent>> calendar = controller.getCalendar();%>
 <%MedicalCenter currentMedicalCenter = controller.getCurrentMedicalCenter(); %>
 <%request.setAttribute("logoLink", "calendar.jsp"); %>
+<%Date today = new Date(); %>
 
 
 
@@ -35,6 +37,7 @@
 		<nav class="navbar navbar-expand-lg navbar-light bg-light">
 			<div class="container-fluid">
 				<a class="navbar-brand" href="#">Agenda de <%=controller.getLoggedDoctor()%>
+				
 				</a>
 
 				<div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -107,13 +110,15 @@
 					%>
 					<td class="<%=css%> event" <%=tdAttr%>>
 						<%if (isAppointment) {%>
-						 RDV 
-						 <%Appointment appointment = (Appointment)event; %>
-						 <a href="cancelAppointment.jsp?id=<%=appointment.getId()%>&from=doctor" onClick="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?')" title="Supprimer...">&times;</a>
-						 <%} else if (isAvailability) {%> 
-						  <input type="checkbox" name="slots" value="<%=slot +" "+(day+1)%>"/><span class="icon icon-checkmark"></span> 
+							 RDV 
+							 <%Appointment appointment = (Appointment)event; %>
+							 <%if(appointment.getStartDate().after(today)){ %>
+							 	<a href="cancelAppointment.jsp?id=<%=appointment.getId()%>&from=doctor" onClick="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?')" title="Supprimer...">&times;</a>
+							 <%} %>
+						 <%}else if (isAvailability) {%> 
+						  	<input type="checkbox" name="slots" value="<%=slot +" "+(day+1)%>"/><span class="icon icon-checkmark"></span> 
 						 <%} else {%> 
-						 <input type="checkbox" name="slots" value="<%=slot+" "+(day+1)%>"/><span class="icon icon-cross"></span> 
+						 	<input type="checkbox" name="slots" value="<%=slot+" "+(day+1)%>"/><span class="icon icon-cross"></span> 
 						 <%}%>
 					</td>
 				<%}%>

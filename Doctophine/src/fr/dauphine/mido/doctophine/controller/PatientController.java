@@ -44,7 +44,7 @@ public class PatientController extends AbstractController {
 	}
 	
 	public Patient getLoggedPatient() {
-		return es.getPatient(1);//FIXME
+		return (Patient)request.getSession().getAttribute("patient");
 	}
 	
 

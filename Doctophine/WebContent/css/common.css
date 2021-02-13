@@ -35,3 +35,16 @@ BODY {
 	align-items:flex-start;
 
 } 
+
+.main-navbar{
+	background-color:#053569;
+	color:white;
+}
+
+.main-navbar A{
+	color:white;
+}
+
+.main-navbar A.dropdown-item{
+	color:black;
+}

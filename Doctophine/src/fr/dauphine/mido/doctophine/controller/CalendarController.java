@@ -15,6 +15,7 @@ import fr.dauphine.mido.doctophine.model.AbstractEvent;
 import fr.dauphine.mido.doctophine.model.Doctor;
 import fr.dauphine.mido.doctophine.model.MedicalCenter;
 import fr.dauphine.mido.doctophine.service.CalendarService;
+import fr.dauphine.mido.doctophine.service.EntityService;
 
 public class CalendarController extends AbstractController{
 	private static final Long MILLIS_IN_WEEK = 6*24*60*60*1000L;
@@ -30,10 +31,12 @@ public class CalendarController extends AbstractController{
 	
 	
 	CalendarService cs;
+	EntityService es;
 	
 	public CalendarController() throws NamingException {
 		InitialContext ic = new InitialContext();
 		cs = (CalendarService)ic.lookup("java:module/CalendarService");
+		es = (EntityService)ic.lookup("java:module/EntityService");
 	}
 	
 	
@@ -130,7 +133,7 @@ public class CalendarController extends AbstractController{
 	}
 	
 	public Doctor getLoggedDoctor() {
-		return ds.getDoctor(1);//FIXME
+		return (Doctor)request.getSession().getAttribute("doctor");
 	}
 	
 	public int getWeek() {
@@ -147,11 +150,11 @@ public class CalendarController extends AbstractController{
 	
 	
 	private MedicalCenter getDefaultMedicalCenter() {
-		return getLoggedDoctor().getMedicalCenterList().get(0); //FIXME
+		return es.getMedicalCenterList(getLoggedDoctor()).get(0); //FIXME
 	}
 	
 	public List<MedicalCenter> getMedicalCenterList(){
-		return getLoggedDoctor().getMedicalCenterList();
+		return es.getMedicalCenterList(getLoggedDoctor());
 	}
 	
 	

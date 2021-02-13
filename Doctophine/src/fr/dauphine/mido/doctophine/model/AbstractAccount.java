@@ -42,8 +42,18 @@ public abstract class AbstractAccount {
 	@Column(name="photo")
 	private String photo;
 	
+	@Column(name="is_disabled")
+	private boolean isDisabled;
 	
 	
+	
+	
+	public boolean isDisabled() {
+		return isDisabled;
+	}
+	public void setDisabled(boolean isDisabled) {
+		this.isDisabled = isDisabled;
+	}
 	
 	public String getPhoto() {
 		return photo;

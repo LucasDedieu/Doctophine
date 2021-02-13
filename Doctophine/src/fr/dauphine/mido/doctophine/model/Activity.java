@@ -30,6 +30,18 @@ public class Activity {
 	@JoinColumn(name = "speciality_id", referencedColumnName = "id")
 	private Speciality speciality;
 	
+	public Activity() {
+		
+	}
+	
+	
+	public Activity(Doctor doctor, MedicalCenter medicalCenter, Speciality speciality) {
+		this.doctor = doctor;
+		this.medicalCenter = medicalCenter;
+		this.speciality = speciality;
+	}
+	
+	
 	public int getId() {
 		return id;
 	}
