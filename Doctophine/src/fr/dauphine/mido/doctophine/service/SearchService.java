@@ -24,10 +24,15 @@ public class SearchService {
 	EntityManager entityManager ;
 
 
-	public List<Activity> findActivitiesByDoctorName(String name) {
+	/**
+	 * 
+	 * @param doctorName 
+	 * @return the activities involving a given doctor
+	 */
+	public List<Activity> findActivitiesByDoctorName(String doctorName) {
 
 		TypedQuery<Activity> query = entityManager.createQuery("FROM Activity WHERE lower(doctor.lastName) like lower(concat('%', :name, '%'))", Activity.class);
-		List<Activity> activityList = query.setParameter("name",name).getResultList();
+		List<Activity> activityList = query.setParameter("name",doctorName).getResultList();
 
 		return activityList;
 
@@ -35,8 +40,15 @@ public class SearchService {
 
 
 
-	public List<Activity> findActivities(String name, Speciality speciality, MedicalCenter medicalCenter) {
-		if((name==null || name.length()==0) && speciality==null && medicalCenter==null) {
+	/**
+	 * Multicriteria search
+	 * @param doctorName  
+	 * @param speciality
+	 * @param medicalCenter
+	 * @return the activities matching the given criteria
+	 */
+	public List<Activity> findActivities(String doctorName, Speciality speciality, MedicalCenter medicalCenter) {
+		if((doctorName==null || doctorName.length()==0) && speciality==null && medicalCenter==null) {
 			return Collections.emptyList();
 		}
 
@@ -50,7 +62,7 @@ public class SearchService {
 			}
 			sb.append("medicalCenter = :medicalCenter");
 		}
-		if(name!=null) {
+		if(doctorName!=null) {
 			if(sb.length()>0) {
 				sb.append(" AND ");
 			}
@@ -64,37 +76,13 @@ public class SearchService {
 		if(medicalCenter!=null) {
 			query.setParameter("medicalCenter",medicalCenter);
 		}
-		if(name!=null) {
-			query.setParameter("name",name);
+		if(doctorName!=null) {
+			query.setParameter("name",doctorName);
 		}
 		List<Activity> activityList = query.getResultList();
 
 		return activityList;
 
 	}
-
-
-
-
-
-	public List<Speciality> getAllSpecialities() {
-
-		TypedQuery<Speciality> query = entityManager.createQuery("FROM Speciality ORDER BY name", Speciality.class);
-		List<Speciality> specialities= query.getResultList();
-
-		return specialities;
-
-	}
-
-	public List<MedicalCenter> getAllMedicalCenters() {
-
-		TypedQuery<MedicalCenter> query = entityManager.createQuery("FROM MedicalCenter ORDER BY name", MedicalCenter.class);
-		List<MedicalCenter> medicalCenters= query.getResultList();
-
-		return medicalCenters;
-
-	}
-
-
 
 }

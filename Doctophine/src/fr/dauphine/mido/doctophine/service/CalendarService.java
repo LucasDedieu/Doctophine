@@ -20,7 +20,6 @@ import fr.dauphine.mido.doctophine.model.Availability;
 import fr.dauphine.mido.doctophine.model.Doctor;
 import fr.dauphine.mido.doctophine.model.MedicalCenter;
 import fr.dauphine.mido.doctophine.model.Patient;
-import fr.dauphine.mido.doctophine.model.Speciality;
 
 @Stateless 
 @TransactionManagement(TransactionManagementType.CONTAINER)
@@ -47,50 +46,59 @@ public class CalendarService {
 
 	}
 
+	/**
+	 * 
+	 * @param doctor
+	 * @param medicalCenter
+	 * @param week
+	 * @param year
+	 * @return the list of doctor's event of each day of week in the given medicalCenter
+	 */
+	public List<List<AbstractEvent>> getCalendar(Doctor doctor, MedicalCenter medicalCenter, int week, int year){ 
+		List<AbstractEvent> eventList = getEventList(doctor, medicalCenter, week, year);
+		//events per day of week
+		List<List<AbstractEvent>> agenda = new ArrayList<>();
 
-	public List<List<AbstractEvent>> getCalendar(Doctor doctor, MedicalCenter medicalCenter, int week, int year){ List<AbstractEvent> eventList = getEventList(doctor, medicalCenter, week, year);
+		int[] days = getDaysOfWeek();
 
-	List<List<AbstractEvent>> agenda = new ArrayList<>();
+		for(int i = 0; i < days.length; i++) { //car date commencent le dimanche
+			int day = days[i];
+			List<AbstractEvent> dayList = new ArrayList<>();
+			agenda.add(dayList); 
+			for(int slot=0; slot<24; slot++) {
+				Calendar calendar = Calendar.getInstance();
+				calendar.set(Calendar.YEAR, year);
+				calendar.set(Calendar.WEEK_OF_YEAR, week);
+				calendar.set(Calendar.DAY_OF_WEEK, day);
+				calendar.set(Calendar.HOUR_OF_DAY, 8+ (int)slot/2);
+				calendar.set(Calendar.MINUTE, slot%2==0?0:30);
+				calendar.set(Calendar.SECOND, 0);
 
-	int[] days = getDaysOfWeek();
-
-	for(int i = 0; i < days.length; i++) { //car date commencent le dimanche
-		int day = days[i];
-		List<AbstractEvent> dayList = new ArrayList<>();
-		agenda.add(dayList); 
-		for(int slot=0; slot<24; slot++) {
-			Calendar calendar = Calendar.getInstance();
-			calendar.set(Calendar.YEAR, year);
-			calendar.set(Calendar.WEEK_OF_YEAR, week);
-			calendar.set(Calendar.DAY_OF_WEEK, day);
-			calendar.set(Calendar.HOUR_OF_DAY, 8+ (int)slot/2);
-			calendar.set(Calendar.MINUTE, slot%2==0?0:30);
-			calendar.set(Calendar.SECOND, 0);
-
-			Date slotDate = calendar.getTime();
-			AbstractEvent slotEvent = null;
-			long slotTime = slotDate.getTime()/1000;
-			for(Iterator<AbstractEvent> it = eventList.iterator();it.hasNext();) {
-				AbstractEvent event = it.next();
-				long eventTime = event.getStartDate().getTime()/1000;
-				if(eventTime==slotTime) {
-					slotEvent= event;
-					it.remove();
-					break;
+				Date slotDate = calendar.getTime();
+				AbstractEvent slotEvent = null;
+				long slotTime = slotDate.getTime()/1000;
+				for(Iterator<AbstractEvent> it = eventList.iterator();it.hasNext();) {
+					AbstractEvent event = it.next();
+					long eventTime = event.getStartDate().getTime()/1000;
+					if(eventTime==slotTime) {
+						slotEvent= event;
+						it.remove();
+						break;
+					}
+				}
+				if(slotEvent != null) {
+					dayList.add(slotEvent);
+				}
+				else {
+					dayList.add(null);
 				}
 			}
-			if(slotEvent != null) {
-				dayList.add(slotEvent);
-			}
-			else {
-				dayList.add(null);
-			}
 		}
+
+		return agenda;
 	}
 
-	return agenda;
-	}
-
+	
 	public int[] getDaysOfWeek() {
 		return new int[] {
 				Calendar.MONDAY,
@@ -101,7 +109,17 @@ public class CalendarService {
 				Calendar.SATURDAY, 
 				Calendar.SUNDAY };
 	}
+	
+	
 
+	/**
+	 * 
+	 * @param doctor
+	 * @param medicalCenter
+	 * @param week
+	 * @param year
+	 * @return the all the events for a given doctor, medical center, a week and a year
+	 */
 	public List<AbstractEvent> getEventList(Doctor doctor, MedicalCenter medicalCenter, int week, int year){
 		List<AbstractEvent> eventList = new ArrayList<>(); 
 		Activity activity = getActivity(doctor, medicalCenter);
@@ -136,14 +154,35 @@ public class CalendarService {
 
 	}
 
-	public void addAvailabilities(List<Date> startDates, MedicalCenter medicalCenter, Doctor doctor) {	
+	
+	/**
+	 * Add an avaibility to the database for a given doctor, medical center and date
+	 * @param startDates
+	 * @param medicalCenter
+	 * @param doctor
+	 */
+	public boolean addAvailabilities(List<Date> startDates, MedicalCenter medicalCenter, Doctor doctor) {	
+		boolean conflict = false;
 		TypedQuery<Activity> query = entityManager.createQuery( "FROM Activity WHERE doctor = :doctor AND medicalCenter = :medicalCenter", Activity.class);
 		List<Activity> activityList = query.setParameter("doctor", doctor).setParameter("medicalCenter",medicalCenter).getResultList();
 		Activity activity = activityList.get(0);
 		for(Date startDate : startDates) {
-			Availability availability = buildAvailability(startDate, activity);
-			entityManager.persist(availability);
+			if(doctorIsFree(doctor, startDate)) {
+				Availability availability = buildAvailability(startDate, activity);
+				entityManager.persist(availability);
+			}else {
+				conflict=true;
+			}
 		}
+		return conflict;
+	}
+
+	
+
+	private boolean doctorIsFree(Doctor doctor, Date startDate) {
+		TypedQuery<Availability> query = entityManager.createQuery( "FROM Availability WHERE activity.doctor = :doctor AND startDate = :startDate", Availability.class);
+		List<Availability> availabilities = query.setParameter("doctor", doctor).setParameter("startDate",startDate).getResultList();
+		return availabilities.isEmpty();
 	}
 
 	private Availability buildAvailability(Date startDate, Activity activity) {
@@ -155,6 +194,13 @@ public class CalendarService {
 
 	}
 
+	
+	/**
+	 * Delete an avaibility to the database for a given doctor, medical center and date
+	 * @param startDate
+	 * @param activity
+	 * @return
+	 */
 	public void deleteAvailabilities(List<Date> startDates, MedicalCenter medicalCenter, Doctor doctor) {
 		TypedQuery<Activity> query = entityManager.createQuery( "FROM Activity WHERE doctor = :doctor AND medicalCenter = :medicalCenter", Activity.class);
 		List<Activity> activityList = query.setParameter("doctor", doctor).setParameter("medicalCenter",medicalCenter).getResultList();
@@ -168,6 +214,11 @@ public class CalendarService {
 
 	}
 
+	/**
+	 * 
+	 * @param patient
+	 * @return the future appointments of a given patient
+	 */
 	public List<Appointment> getNextAppointments(Patient patient) {
 		Date date = new Date();
 		TypedQuery<Appointment> query = entityManager.createQuery("FROM Appointment WHERE patient = :patient AND startDate >= :date AND isCancelled = FALSE ORDER BY startDate", Appointment.class);
@@ -179,6 +230,11 @@ public class CalendarService {
 		return appointmentList;
 	}
 
+	/**
+	 * 
+	 * @param patient
+	 * @return the past appointments of a given patient
+	 */
 	public List<Appointment> getPreviousAppointments(Patient patient) {
 		Date date = new Date();
 		TypedQuery<Appointment> query = entityManager.createQuery("FROM Appointment WHERE patient = :patient AND startDate < :date AND isCancelled = FALSE ORDER BY startDate", Appointment.class);
@@ -191,15 +247,24 @@ public class CalendarService {
 
 	}
 
+	
+	/**
+	 * Cancel an appointment
+	 * @param id
+	 */
 	public void cancelAppointment(int id) {
 		Appointment app = entityManager.find(Appointment.class, id);
 		app.setCancelled(true);
-
-
-
 	}
 
 
+	/**
+	 * Add an appointment to the database for a given patient, activity and date
+	 * @param startDate
+	 * @param activityId
+	 * @param patientId
+	 * @param description
+	 */
 	public void addAppointment(Date startDate, int activityId, int patientId, String description) {		
 		Activity activity = entityManager.find(Activity.class, activityId);
 		Patient patient = entityManager.find(Patient.class, patientId);
@@ -220,6 +285,10 @@ public class CalendarService {
 	}
 
 
+	/**
+	 * 
+	 * @return all the appointments of the day
+	 */
 	public List<Appointment> getTodayAppointment() {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -231,9 +300,9 @@ public class CalendarService {
 		Date endDate = cal.getTime();
 
 
-		TypedQuery<Appointment> query = entityManager.createQuery("FROM Appointment WHERE startDate < :startDate AND startDate < :endDate AND isCancelled = FALSE ORDER BY startDate", Appointment.class);
+		TypedQuery<Appointment> query = entityManager.createQuery("FROM Appointment WHERE startDate > :startDate AND endDate < :endDate AND isCancelled = FALSE ORDER BY startDate", Appointment.class);
 		List<Appointment> appointmentList = query.setParameter("startDate",startDate).setParameter("endDate",endDate).getResultList();
-		
+
 		return appointmentList;
 	}
 

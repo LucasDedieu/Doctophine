@@ -66,6 +66,12 @@ public class EntityService {
 		return getData(Speciality.class, id);
 	}
 
+	/**
+	 * 
+	 * @param doctor
+	 * @param medicalCenter
+	 * @return the activity for a given doctor and medical center
+	 */
 	public Activity getActivity(Doctor doctor, MedicalCenter medicalCenter) {
 
 		TypedQuery<Activity> query = entityManager.createQuery( "FROM Activity WHERE doctor = ?1 AND medicalCenter = ?2", Activity.class);
@@ -79,6 +85,10 @@ public class EntityService {
 
 
 
+	/**
+	 * 
+	 * @return all the specialities
+	 */
 	public List<Speciality> getAllSpecialities() {
 
 		TypedQuery<Speciality> query = entityManager.createQuery("FROM Speciality ORDER BY name", Speciality.class);
@@ -88,6 +98,10 @@ public class EntityService {
 
 	}
 
+	/**
+	 * 
+	 * @return all the medical centers
+	 */
 	public List<MedicalCenter> getAllMedicalCenters() {
 
 		TypedQuery<MedicalCenter> query = entityManager.createQuery("FROM MedicalCenter ORDER BY name", MedicalCenter.class);
@@ -98,6 +112,11 @@ public class EntityService {
 	}
 
 
+	/**
+	 * 
+	 * @param doctor
+	 * @return all the medical center of a given doctor
+	 */
 	public List<MedicalCenter> getMedicalCenterList(Doctor doctor){
 
 		TypedQuery<Activity> query = entityManager.createQuery( "FROM Activity WHERE doctor = :doctor", Activity.class);

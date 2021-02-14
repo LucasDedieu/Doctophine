@@ -1,5 +1,6 @@
 package fr.dauphine.mido.doctophine.controller;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -7,7 +8,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -26,7 +26,6 @@ public class CalendarController extends AbstractController{
 	private boolean opPrev;
 	private boolean opEnable;
 	private boolean opDisable;
-	private boolean opCancel;
 	private String[] slots;
 	
 	
@@ -43,8 +42,13 @@ public class CalendarController extends AbstractController{
 	
 	
 	
-	
-	public void init() {
+	@Override
+	public void init() throws IOException {
+		super.init();
+		if(!(loggedAccount instanceof Doctor)) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
 		if(week == 0) {
 			week = getCurrentWeek();
 		}
@@ -55,12 +59,10 @@ public class CalendarController extends AbstractController{
 			medicalCenter = getDefaultMedicalCenter();
 		}
 		if(opNext) {
-			//week = getNextWeek();
 			performNext();
 			
 		}
 		if(opPrev) {
-			//week=getPrevWeek();
 			performPrev();
 		}
 		if(opEnable) {
@@ -68,18 +70,10 @@ public class CalendarController extends AbstractController{
 		}
 		if(opDisable) {
 			processDisable();
-		}
-		if(opCancel) {
-			processCancel();
-		}
-		
+		}		
 	}
 	
 	
-	private void processCancel() {
-		// TODO Auto-generated method stub
-		
-	}
 
 
 	private void performNext(){
@@ -99,22 +93,8 @@ public class CalendarController extends AbstractController{
 	}
 
 
-	private int getNextWeek() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.WEEK_OF_YEAR, week);
-		calendar.add(Calendar.WEEK_OF_YEAR, 1);
-		return calendar.get(Calendar.WEEK_OF_YEAR);
-	}
-	
-	private int getPrevWeek() {
-		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.WEEK_OF_YEAR, week);
-		calendar.add(Calendar.WEEK_OF_YEAR, -1);
-		return calendar.get(Calendar.WEEK_OF_YEAR);
-	}
-
 	public void setMedicalCenter(int id) {
-		this.medicalCenter = ds.getMedicalCenter(id);
+		this.medicalCenter = es.getMedicalCenter(id);
 	}
 	public void setWeek(int week) {
 		this.week = week;
@@ -218,7 +198,11 @@ public class CalendarController extends AbstractController{
 
 	private void processEnable() {
 		List<Date> dates = getSlotsDateList();
-		cs.addAvailabilities(dates, medicalCenter, getLoggedDoctor());
+		boolean conflict = cs.addAvailabilities(dates, medicalCenter, getLoggedDoctor());
+		if(conflict) {
+			request.setAttribute("calendar.conflict",true);
+		}
+		
 	}
 	
 	public int[] getDaysOfWeek() {

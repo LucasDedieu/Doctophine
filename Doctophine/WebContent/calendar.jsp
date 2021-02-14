@@ -1,3 +1,4 @@
+<%@page import="fr.dauphine.mido.doctophine.model.Patient"%>
 <%@page import="java.util.Date"%>
 <%@page import="fr.dauphine.mido.doctophine.model.Availability"%>
 <%@page import="java.util.List"%>
@@ -24,6 +25,7 @@
 <%@ include file="/fragments/header.jspf"%>
 <link href="css/calendar.css" rel="stylesheet">
 <link rel="stylesheet" href="css/tablecellsselection.css">
+
 
 
 <div class="calendar">
@@ -93,13 +95,18 @@
 					String tdAttr = "";
 					if(isAppointment){
 						Appointment appointment = (Appointment)event;
-						String patient = appointment.getPatient().getFullName();
-						String description = appointment.getDescription();
-						if(description==null){
-							description="";
-						}
+						Patient patient =appointment.getPatient();
+						String patientName = patient.getFullName();
 					
-						tdAttr = "data-trigger='hover' data-toggle='popover' title=\""+patient+"\" data-content=\""+description+"\"";
+						StringBuilder sb = new StringBuilder();
+						sb.append("Tel: "+appointment.getPatient().getPhone());
+						if(patient.getBirthDate()!=null){
+							sb.append(" - Date de naissance : "+patient.getBirthDate());
+						}
+						sb.append(" - Motif : "+appointment.getDescription());
+							
+						
+						tdAttr = "data-trigger='hover' data-toggle='popover' title=\""+patientName+"\" data-content=\""+sb.toString()+"\"";
 					}
 							
 							
@@ -109,7 +116,7 @@
 							 RDV 
 							 <%Appointment appointment = (Appointment)event; %>
 							 <%if(appointment.getStartDate().after(today)){ %>
-							 	<a href="cancelAppointment.jsp?id=<%=appointment.getId()%>&from=doctor" onClick="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?')" title="Supprimer...">&times;</a>
+							 	<a href="cancelAppointment.jsp?id=<%=appointment.getId()%>&week=<%=controller.getWeek()%>&year=<%=controller.getYear()%>" onClick="return confirm('Voulez-vous vraiment annuler ce rendez-vous ?')" title="Supprimer...">&times;</a>
 							 <%} %>
 						 <%}else if (isAvailability) {%> 
 						  	<input type="checkbox" name="slots" value="<%=slot +" "+(day+1)%>"/><span class="icon icon-checkmark"></span> 
@@ -129,5 +136,10 @@
 </div>
 <script src="js/tablecellsselection.js"></script>
 <script src="js/calendar.js"></script>
+
+<%if(request.getAttribute("calendar.conflict")!=null) {%>
+	<script>alert("Certains créneaux n'ont pas pu être activés. (Conflit avec les autre centres médicaux)")</script>
+<%} %>
+
 
 <%@ include file="/fragments/footer.jspf"%>

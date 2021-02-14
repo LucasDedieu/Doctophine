@@ -14,22 +14,32 @@
 						<label for="inputEmail" class="sr-only">Login</label> <INPUT
 							Type=text id="input" name=login class="form-control"
 							placeholder="Login" required autofocus>
+							
+							
+									
+											
 					</div>
 				</li>
-				<li class="list-group-item"><div>
+				<li class="list-group-item">
 						<label for="inputPassword" class="sr-only">Password</label> <INPUT
 							Type=password name=password id="inputPassword"
-							class="form-control" placeholder="Password" required>
-					</div></li>
+							class="form-control" placeholder="Password" required
+							>
+				</li>
 				<li class="list-group-item  button"><button type="submit" name="submit"
 						class="btn btn-primary">Connexion</button></li>
+						
 				<li class="list-group-item">
 					<p>
 						Vous n'avez pas un compte? <a href="inscription_client.jsp">
 							Inscrivez vous. </a>
 					</p>
+					
 				</li>
 			</ul>
+
+
+
 
 			<div class="form-signin">
 				<% if (request.getAttribute("valide") != null) {%>
@@ -41,6 +51,7 @@
 			</div>
 			
 
+
 			<div class="form-signin" >
 				<%
 					if (request.getAttribute("error_login") != null) {
@@ -48,15 +59,13 @@
 				<div class="alert alert-danger" role="alert">
 					<%=request.getAttribute("error_login")%>
 				</div>
-				<%
-					}
-					;
-				%>
+				<%};%>
 
 			</div>
 		</div>
 	</FORM>
 </div>
+
 
 
 <%@ include file="/fragments/footer.jspf"%>

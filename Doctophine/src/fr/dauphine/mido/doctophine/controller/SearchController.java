@@ -1,5 +1,6 @@
 package fr.dauphine.mido.doctophine.controller;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -8,9 +9,8 @@ import javax.naming.NamingException;
 
 import fr.dauphine.mido.doctophine.model.Activity;
 import fr.dauphine.mido.doctophine.model.MedicalCenter;
+import fr.dauphine.mido.doctophine.model.Patient;
 import fr.dauphine.mido.doctophine.model.Speciality;
-import fr.dauphine.mido.doctophine.service.CalendarService;
-import fr.dauphine.mido.doctophine.service.DoctophineService;
 import fr.dauphine.mido.doctophine.service.EntityService;
 import fr.dauphine.mido.doctophine.service.SearchService;
 
@@ -39,8 +39,13 @@ public class SearchController extends AbstractController {
 
 
 
-	
-	public void init() {
+	@Override
+	public void init() throws IOException {
+		super.init();
+		if(!(loggedAccount instanceof Patient)) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
 		if(opSearch) {
 			if(speciality!=null || medicalCenter!=null) {
 				activities = ss.findActivities(name, speciality, medicalCenter);

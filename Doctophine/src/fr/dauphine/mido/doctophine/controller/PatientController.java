@@ -1,6 +1,6 @@
 package fr.dauphine.mido.doctophine.controller;
 
-import java.util.Calendar;
+import java.io.IOException;
 import java.util.List;
 
 import javax.naming.InitialContext;
@@ -11,12 +11,9 @@ import fr.dauphine.mido.doctophine.model.MedicalCenter;
 import fr.dauphine.mido.doctophine.model.Patient;
 import fr.dauphine.mido.doctophine.model.Speciality;
 import fr.dauphine.mido.doctophine.service.CalendarService;
-import fr.dauphine.mido.doctophine.service.DoctophineService;
 import fr.dauphine.mido.doctophine.service.EntityService;
-import fr.dauphine.mido.doctophine.service.SearchService;
 
 public class PatientController extends AbstractController {
-	private DoctophineService ds = DoctophineService.getInstance();
 	private int week;
 	private int year;
 	private boolean opNext;
@@ -31,8 +28,13 @@ public class PatientController extends AbstractController {
 		es = (EntityService)ic.lookup("java:module/EntityService");
 	}
 
-	public void init() {
-
+	@Override
+	public void init() throws IOException {
+		super.init();
+		if(!(loggedAccount instanceof Patient)) {
+			response.sendRedirect("index.jsp");
+			return;
+		}
 	}
 	
 	public List<Speciality> getAllSpecialities(){

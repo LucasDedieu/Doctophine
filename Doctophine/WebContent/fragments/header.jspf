@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%
 String title = (String)request.getAttribute("pageTitle");
 if(title == null){
@@ -7,6 +7,17 @@ if(title == null){
 }
 
 String logoLink = (String)request.getAttribute("logoLink");
+if(logoLink == null || logoLink.length()==0){
+	if(request.getSession().getAttribute("doctor")!=null){ 
+		logoLink="calendar.jsp";
+	}
+	else if(request.getSession().getAttribute("patient")!=null){
+		logoLink="patient.jsp";
+	}
+	else{
+		logoLink="index.jsp";
+	}
+}
 
 %>
 
@@ -38,6 +49,9 @@ String logoLink = (String)request.getAttribute("logoLink");
 		
 		<link href="css/common.css" rel="stylesheet">
 		<link href="icons/icomoon.css" rel="stylesheet">
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap" rel="stylesheet">
+		<%--<link href="https://getbootstrap.com/docs/4.0/examples/sticky-footer/sticky-footer.css" rel="stylesheet"> --%>
 		<title><%=title%></title>
 	</head>
 	<body>

@@ -41,8 +41,7 @@ public class DeconnexionController extends HttpServlet {
         else
         	session.removeAttribute("admin");
         
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("index.jsp"); 
-		requestDispatcher.include(request, response);
+        response.sendRedirect("index.jsp");
         
         
 	}

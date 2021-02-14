@@ -38,13 +38,25 @@ BODY {
 
 .main-navbar{
 	background-color:#053569;
+	background-color: #0596DE;
 	color:white;
 }
 
+.main-navbar .navbar-brand{
+	font-family: 'Abril Fatface', cursive;
+	font-size: 40px;
+}
+
 .main-navbar A{
+	
 	color:white;
+	
 }
 
 .main-navbar A.dropdown-item{
 	color:black;
+}
+
+.footer{
+	text-align:center;
 }

@@ -26,8 +26,11 @@
 	<%if(activities.isEmpty()) {%>
 		<div class="no-result">Nous n'avons trouvé aucun professionnel de santé correspondant à votre requete...</div>
 	<%}else{ %>
+	<div class="container-fluid">
+		<div class="row">
 		<div class="cards">
 			<%for(Activity activity: activities){%>
+			<div class="col">
 				<div class="card card-doctor">
 					 <div class="card-body">
 					 	<div class="card-photo">
@@ -45,8 +48,11 @@
 						</div>
 					 </div>
 				</div>
+				</div>
 	
 			<%} %>
+		</div>
+		</div>
 		</div>
 	<%}%>
 </div>

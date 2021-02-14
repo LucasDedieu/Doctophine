@@ -160,17 +160,20 @@
 		</tbody>
 	</table>
 
+
 	<form action="Deconnexion" method="GET">
 		<button
 			style="position: absolute; left: 1380px; top: 7px; width: 120px"
 			type="submit" class="btn btn-danger">Deconnexion</button>
 	</form>
 
-	<form action="SuppressionCompte" method="GET">
+
+	<form action="SuppressionCompte" method="GET" style="text-align:center;" >
+		<a class="btn btn-secondary" href="password_maj.jsp">Modifier le mot de passe</a>
 		<button
-			style="position: absolute; left: 580px; top: 580px; width: 240px"
 			type="submit" class="btn btn-danger">Supprimer mon compte</button>
 	</form>
+
 	<script>
     
     function validateFormNom() {

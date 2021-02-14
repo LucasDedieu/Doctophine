@@ -17,6 +17,7 @@
 }
 
 
+
 .patient .cards{
 	display:flex;
 	align-items:flex-start;
@@ -36,6 +37,10 @@
 
 .patient .mc-name{
 	font-weight:bold;	
+}
+
+.patient .card{
+	margin-bottom: 40px;
 }
 
 
@@ -110,5 +115,8 @@
 .patient .btn-search{
     background-color: #0596DE;
     border: 0;
+}
+.patient .next-appointments{
+	margin-top:70px
 }
 
