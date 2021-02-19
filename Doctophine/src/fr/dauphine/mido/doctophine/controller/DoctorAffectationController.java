@@ -1,8 +1,10 @@
 package fr.dauphine.mido.doctophine.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -63,101 +65,119 @@ public class DoctorAffectationController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
+
 		HttpSession session_ = request.getSession();
 		Patient admin = (Patient) session_.getAttribute("admin");
-		
-		String medicalCenterName = request.getParameter("medicalcenter");
-		String specialityName = request.getParameter("speciality");
 		String doctorEmail = request.getParameter("currentDoctor");
-
 		Doctor newDoctor = (Doctor) doctorService.findByEmail(doctorEmail);
+		ArrayList<MedicalCenter> medicalCenters = (ArrayList<MedicalCenter>) medicalCenterService.getAll();
+		ArrayList<Speciality> specialities = (ArrayList<Speciality>) specialityService.getAll();
+		RequestDispatcher requestDispatcher = null; 
 		
-		HashMap<MedicalCenter,Speciality> hm = new HashMap<MedicalCenter,Speciality>();
+		if (request.getParameter("addAffectation") != null) {
 
-		MedicalCenter medicalCenter = (MedicalCenter) medicalCenterService.findByName(medicalCenterName);
-		Speciality speciality = (Speciality) specialityService.findByName(specialityName);
-		hm.put(medicalCenter, speciality);
-		
-		Activity activity = new Activity(newDoctor, medicalCenter, speciality);
+			String medicalCenterName = request.getParameter("medicalcenter");
+			String specialityName = request.getParameter("speciality");
 
-		activityService.save(activity);
-		 
-		int i = 0;
-		while (request.getParameter("medicalcenter" + i) != null && request.getParameter("speciality" + i) != null) {
+			if (!medicalCenterName.equals("") && !specialityName.equals("")) {
 
-			String medicalCenterName1 = request.getParameter("medicalcenter" + i);
-			String specialityName1 = request.getParameter("speciality" + i);
+				MedicalCenter medicalCenter = (MedicalCenter) medicalCenterService
+						.findById(Integer.parseInt(medicalCenterName));
+				Speciality speciality = (Speciality) specialityService.findById(Integer.parseInt(specialityName));
+				System.out.println("doctor name: " + newDoctor.getFullName());
+				System.out.println("center medical name: " + medicalCenter.getName());
+				System.out.println("speciality name: " + speciality.getName());
 
-			MedicalCenter medicalCenter1 = (MedicalCenter) medicalCenterService.findByName(medicalCenterName1);
-			Speciality speciality1 = (Speciality) specialityService.findByName(specialityName1);
-			hm.put(medicalCenter1, speciality1);
-			
-			Activity activity1 = new Activity(newDoctor, medicalCenter1, speciality1);
-			
-			 
-			activityService.save(activity1);
-			i++;
-		}
-		
-		String messageConfirmation = "Bonjour,\n\nVotre compte a été crée, on vous invite à vous rendre sur notre site officiel pour vous"
-				+ " authentifier avec votre email et votre mot de passe qui est le suivant:"
-				+ "\n\n\t "+ newDoctor.getPassword() +" \n\n"
-				+ "L'administrateur vous a affectez vers le(s) centre(s) medica(ux)l suivant(s):\n\n\t";
-		 
-		for(Map.Entry element: hm.entrySet()) {
-			 
-			MedicalCenter mc = (MedicalCenter) element.getKey();
-			Speciality s = (Speciality) element.getValue();
-			messageConfirmation+=" - "+ mc.getName()+" en tant que spécialiste en "+s.getName()+"\n\t";
-		}
-		
-		messageConfirmation += "\nNB: Veuillez mettre à jour votre mot de passe dans les plus bréf délais\n\n"
-				+ "L'équipe Doctophine\n\n" + "Paris 16éme.";
-		
-		RequestDispatcher requestDispatcher = null;
-		// Send a confirmation mail
+				Activity activity = new Activity(newDoctor, medicalCenter, speciality);
 
-		String host = "smtp.gmail.com";
-		final String user = "ne.pas.repondre.doctophine@gmail.com";
-		final String motdepasse = "JavaApp2021";
+				activityService.save(activity); 
+				
+				requestDispatcher = request.getRequestDispatcher("inscription_doctor_aff.jsp");
+				session_.setAttribute("admin", admin);
+				request.setAttribute("admin", admin);
+				request.setAttribute("newDoctor", newDoctor);
+				request.setAttribute("medicalCenters", medicalCenters);
+				request.setAttribute("specialities", specialities);
+				request.setAttribute("add", "Affectation du medecin au centre medical " + medicalCenter.getName()
+						+ " en tant que " + speciality.getName());
+				requestDispatcher.include(request, response);
 
-		String to = "anis.si-youcef@dauphine.eu";
-
-		Properties props = new Properties();
-		props.put("mail.smtp.host", "smtp.gmail.com");
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.port", "587");
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.ssl.trust", "*");
-
-		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(user, motdepasse);
+			} else {
+				 
+				requestDispatcher = request.getRequestDispatcher("inscription_doctor_aff.jsp");
+				session_.setAttribute("admin", admin);
+				request.setAttribute("admin", admin);
+				request.setAttribute("newDoctor", newDoctor);
+				request.setAttribute("medicalCenters", medicalCenters);
+				request.setAttribute("specialities", specialities);
+				requestDispatcher.include(request, response);
 			}
-		});
 
-		try {
-			MimeMessage message = new MimeMessage(session);
-			message.setFrom(new InternetAddress(user));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-			message.setSubject("[Doctophine] Confirmation de votre inscription");
-			message.setText(messageConfirmation);
+		} else {
 
-			Transport.send(message);
+			String messageConfirmation = "Bonjour,\n\nVotre compte a été crée, on vous invite à vous rendre sur notre site officiel pour vous"
+					+ " authentifier avec votre email et votre mot de passe qui est le suivant:" + "\n\n\t "
+					+ newDoctor.getPassword() + " \n\n";
 
-			System.out.println("message sent!");
+			ArrayList<Activity> doctorActivities = (ArrayList<Activity>) activityService
+					.findAllByDoctorId(newDoctor.getId());
 
-		} catch (MessagingException mex) {
-			System.out.println("Error: unable to send message....");
-			mex.printStackTrace();
-		} finally {
+			if (doctorActivities.size()!=0)
+				messageConfirmation += "L'administrateur vous a affectez vers les centres medicaux suivants:\n\n\t";
 
-			requestDispatcher = request.getRequestDispatcher("accueil.jsp");
-			request.setAttribute("valide", "Inscription reussie, un email de confirmation a ete envoye au nouveau medecin.");
-			request.setAttribute("patient", admin);
-			requestDispatcher.include(request, response);
+			for (int i = 0; i < doctorActivities.size(); i++) {
 
+				messageConfirmation += " - " + doctorActivities.get(i).getMedicalCenter().getName()
+						+ " en tant que spécialiste en " + doctorActivities.get(i).getSpeciality().getName() + "\n\t";
+			}
+
+			messageConfirmation += "\nNB: Veuillez mettre à jour votre mot de passe dans les plus bréf délais\n\n"
+					+ "L'équipe Doctophine\n\n" + "Paris 16éme.";
+
+			// Send a confirmation mail
+
+			String host = "smtp.gmail.com";
+			final String user = "ne.pas.repondre.doctophine@gmail.com";
+			final String motdepasse = "JavaApp2021";
+
+			String to = newDoctor.getEmail();
+
+			Properties props = new Properties();
+			props.put("mail.smtp.host", "smtp.gmail.com");
+			props.put("mail.smtp.auth", "true");
+			props.put("mail.smtp.port", "587");
+			props.put("mail.smtp.starttls.enable", "true");
+			props.put("mail.smtp.ssl.trust", "*");
+
+			Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+				protected PasswordAuthentication getPasswordAuthentication() {
+					return new PasswordAuthentication(user, motdepasse);
+				}
+			});
+
+			try {
+				MimeMessage message = new MimeMessage(session);
+				message.setFrom(new InternetAddress(user));
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+				message.setSubject("[Doctophine] Confirmation de votre inscription");
+				message.setText(messageConfirmation);
+
+				Transport.send(message);
+
+				System.out.println("message sent!");
+
+			} catch (MessagingException mex) {
+				System.out.println("Error: unable to send message....");
+				mex.printStackTrace();
+			} finally {
+
+				requestDispatcher = request.getRequestDispatcher("accueil.jsp");
+				request.setAttribute("valide",
+						"Inscription reussie, un email de confirmation a ete envoye au nouveau medecin.");
+				request.setAttribute("patient", admin);
+				requestDispatcher.include(request, response);
+
+			}
 		}
 
 	}

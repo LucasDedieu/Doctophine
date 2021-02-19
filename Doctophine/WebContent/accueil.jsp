@@ -74,17 +74,9 @@
 	<div
 		style="color: white; width: 1440px; top: 90px; position: fixed; font-size: 15px; font-family: 'Josefin Sans', sans-serif; left: 1px">
 		<ul style="width: 18%; border-radius: 10px; size: 10px; padding: 1px;">
-			<li
-				style="background: #053569; margin: 1em 0; font-size: 20px; padding-left: 20px; border-radius: 10px">
-				<a href="" style="color: white;"> Accueil</a>
-			</li>
+
 			<% 	if(request.getAttribute("patient")!=null){
-                		if (!p.isAdmin()){ %>
-			<li
-				style="background: #053569; margin: 1em 0; font-size: 20px; padding-left: 20px; border-radius: 10px">
-				<a href="GestionCompteClientController"
-				style="color: white;"> Gerer mon compte</a>
-			</li>
+                		if (p.isAdmin()){ %>
 			<li
 				style="background: #053569; margin: 1em 0; font-size: 20px; padding-left: 20px; border-radius: 10px">
 				<a

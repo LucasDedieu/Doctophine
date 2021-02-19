@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import fr.dauphine.mido.doctophine.model.Doctor;
 import fr.dauphine.mido.doctophine.model.Patient;
+import fr.dauphine.mido.doctophine.service.DoctorService;
 import fr.dauphine.mido.doctophine.service.PatientService;
 
 /**
@@ -24,6 +25,8 @@ public class ModificationMotDePasseController extends HttpServlet {
 	
 	@EJB
 	PatientService patientService;
+	@EJB
+	DoctorService doctorService;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -43,13 +46,15 @@ public class ModificationMotDePasseController extends HttpServlet {
 		Patient patient = (Patient) session.getAttribute("patient");
 		Doctor doctor = (Doctor) session.getAttribute("doctor"); 
 		RequestDispatcher requestDispatcher = null; 
-
+		System.out.println("1");
 		if (patient != null) {
+			 
 			System.out.println(patient.getFirstName());
 			requestDispatcher = request.getRequestDispatcher("password_maj.jsp");
 			request.setAttribute("patient", patient);
 			requestDispatcher.include(request, response);
 		} else if (doctor != null) {
+			 
 			System.out.println(doctor.getFirstName());
 			requestDispatcher = request.getRequestDispatcher("password_maj.jsp");
 			request.setAttribute("doctor", doctor);
@@ -67,24 +72,25 @@ public class ModificationMotDePasseController extends HttpServlet {
 		Patient patient = (Patient) session.getAttribute("patient");
 		Doctor doctor = (Doctor) session.getAttribute("doctor"); 
 		RequestDispatcher requestDispatcher = null;
+		 
 		
 		if (patient != null) {
-			
+	 
 			String ex_password = request.getParameter("ex_password"); 
 			String new_password = request.getParameter("new_password1");
 			
-			if (patient.getPassword().equals(ex_password)) { 
-				System.out.println("ok");
+			if (patient.getPassword().equals(ex_password)) {
+				 
 				patient.setPassword(new_password);
 				patientService.update(patient);
 				
-				
+				requestDispatcher = request.getRequestDispatcher("accueil.jsp");
 				request.setAttribute("patient", patient);
 				session.setAttribute("patient", patient);
 				request.setAttribute("valide_password", "Votre mot de passe a ete modifie");
-				response.sendRedirect("patient.jsp");
+				requestDispatcher.include(request, response);
 			} else {
-				System.out.println("no ok");
+				 
 				requestDispatcher = request.getRequestDispatcher("password_maj.jsp");
 				request.setAttribute("patient", patient);
 				request.setAttribute("error_password", "Veuillez inserer correctement votre mot de passe actuel");
@@ -97,10 +103,29 @@ public class ModificationMotDePasseController extends HttpServlet {
 			
 			
 		} else if (doctor != null) {
-			System.out.println(doctor.getFirstName());
-			requestDispatcher = request.getRequestDispatcher("password_maj.jsp");
-			request.setAttribute("doctor", doctor);
-			requestDispatcher.include(request, response);
+			 
+			String ex_password = request.getParameter("ex_password"); 
+			String new_password = request.getParameter("new_password1");
+			
+			if (doctor.getPassword().equals(ex_password)) {
+				 
+				doctor.setPassword(new_password);
+				doctorService.update(doctor);
+				
+				requestDispatcher = request.getRequestDispatcher("accueil.jsp");
+				request.setAttribute("doctor", doctor);
+				session.setAttribute("doctor", doctor);
+				request.setAttribute("valide_password", "Votre mot de passe a ete modifie");
+				requestDispatcher.include(request, response);
+			} else {
+				 
+				requestDispatcher = request.getRequestDispatcher("password_maj.jsp");
+				request.setAttribute("doctor", doctor);
+				request.setAttribute("error_password", "Veuillez inserer correctement votre mot de passe actuel");
+				session.setAttribute("doctor", doctor);
+				requestDispatcher.include(request, response);
+				
+			}
 		}
 		 
 		

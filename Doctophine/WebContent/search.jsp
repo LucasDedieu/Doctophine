@@ -27,8 +27,9 @@
 		<div class="no-result">Nous n'avons trouvé aucun professionnel de santé correspondant à votre requete...</div>
 	<%}else{ %>
 	<div class="container-fluid">
-		<div class="row">
+		
 		<div class="cards">
+		<div class="row">
 			<%for(Activity activity: activities){%>
 			<div class="col">
 				<div class="card card-doctor">

@@ -3,6 +3,7 @@ package fr.dauphine.mido.doctophine.controller;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -85,32 +86,40 @@ public class InscriptionDoctorController extends HttpServlet {
 		Doctor doctor = doctorService.findByEmail(email);
 		
 		if (doctor != null) {
-
+			 
 			System.out.println("Erreur");
-			requestDispatcher = request.getRequestDispatcher("index.jsp");
-			request.setAttribute("error", "Email invalide!");
+			requestDispatcher = request.getRequestDispatcher("inscription_doctor.jsp");
+			session.setAttribute("admin", admin);
+			request.setAttribute("admin", admin);
+			request.setAttribute("error", "Email deja existant.");
 			requestDispatcher.include(request, response);
 
 		} else {
 
 			String adresse = rue + " " + code_postal + " " + ville;
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			Date date_naissance = null;
+			Date date_naissance = null; 
 
 			try {
-				date_naissance = sdf.parse(date);
-			} catch (ParseException ignore) {
+				date_naissance = sdf.parse(date); 
+			} catch (ParseException e) {
+				System.out.println(e.getMessage());
 			}
+ 
 
-
-			Doctor newDoctor = new Doctor(prenom, nom, adresse, email, password, date_naissance ,tel); 
+			Doctor newDoctor = new Doctor(prenom, nom, adresse, email, password, date_naissance, tel); 
 			
 			doctorService.save(newDoctor); 
+			
+			ArrayList<MedicalCenter> medicalCenters = (ArrayList<MedicalCenter>) medicalCenterService.getAll();
+			ArrayList<Speciality> specialities = (ArrayList<Speciality>) specialityService.getAll();
 
 			requestDispatcher = request.getRequestDispatcher("inscription_doctor_aff.jsp");
 			session.setAttribute("admin", admin);
 			request.setAttribute("admin", admin);
 			request.setAttribute("newDoctor", newDoctor);
+			request.setAttribute("medicalCenters", medicalCenters);
+			request.setAttribute("specialities", specialities);
 			requestDispatcher.include(request, response);
 
 		}

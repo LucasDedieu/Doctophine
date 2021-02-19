@@ -3,7 +3,9 @@
 <link href="css/login.css" rel="stylesheet">
 
 <div class="login">
-
+	<div class="logo">
+		<img src="images/logo.png"/>
+	</div>
 	<FORM method="POST" ACTION="Login">
 		<div class="card">
 
@@ -42,9 +44,9 @@
 
 
 			<div class="form-signin">
-				<% if (request.getAttribute("valide") != null) {%>
+				<% if (request.getSession().getAttribute("valide") != null) {%>
 				<div class="alert alert-success" role="alert">
-					<%=request.getAttribute("valide")%>
+					<%=request.getSession().getAttribute("valide")%>
 				</div>
 				<%}%>
 
@@ -54,10 +56,10 @@
 
 			<div class="form-signin" >
 				<%
-					if (request.getAttribute("error_login") != null) {
+					if (request.getSession().getAttribute("error_login") != null) {
 				%>
 				<div class="alert alert-danger" role="alert">
-					<%=request.getAttribute("error_login")%>
+					<%=request.getSession().getAttribute("error_login")%>
 				</div>
 				<%};%>
 

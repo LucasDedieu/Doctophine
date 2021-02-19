@@ -86,8 +86,8 @@ public class InscriptionController extends HttpServlet {
 		if (patient != null) {
 			
 			System.out.println("Erreur");
-			requestDispatcher = request.getRequestDispatcher("index.jsp");
-			request.setAttribute("error", "Email invalide!");
+			requestDispatcher = request.getRequestDispatcher("inscription_client.jsp");
+			request.setAttribute("error", "Email deja existant.");
 			requestDispatcher.include(request, response);
 			
 		} else {
@@ -95,26 +95,29 @@ public class InscriptionController extends HttpServlet {
 			String adresse = rue + " " + code_postal + " " + ville;
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date date_naissance = null;
+			Date creationDate = null;
 			
 			try {
 				date_naissance = sdf.parse(date);
-			} catch (ParseException ignore) {
-				
+				creationDate = sdf.parse(date);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
 			}
+
+			byte isAdmin = 0;
 
 			Patient newPatient = new Patient(prenom, nom, adresse, email, password, date_naissance, tel);
 
 			patientService.save(newPatient);
 			
-			requestDispatcher = request.getRequestDispatcher("index.jsp");
-			request.setAttribute("valide", "Inscription réussie, un email de confirmation vous a été envoyé!");
-			requestDispatcher.include(request, response);
+			//request.getSession().setAttribute("valide", "Inscription réussie, un email de confirmation vous a été envoyé!");
+			//response.sendRedirect("index.jsp");
 
 			  String host="smtp.gmail.com";  
 			  final String user = "ne.pas.repondre.doctophine@gmail.com";
 			  final String motdepasse = "JavaApp2021";
 
-			  String to=newPatient.getEmail();
+			  String to=email;
 
 			    
 			   Properties props = new Properties(); 
@@ -129,18 +132,17 @@ public class InscriptionController extends HttpServlet {
 			      protected PasswordAuthentication getPasswordAuthentication() {  
 			    return new PasswordAuthentication(user,motdepasse);  
 			      }  
-			    });  
+			    }); 
 
 			 
 			        try {  
 			         MimeMessage message = new MimeMessage(session);  
 			         message.setFrom(new InternetAddress(user));  
 			         message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));  
-			         message.setSubject("Confirmation d'inscription");  
+			         message.setSubject("[Patient] Confirmation d'inscription");  
 			         message.setText("Bonjour\n\nBienvenu sur Docotophine, nous sommes ravi de vous avoir parmi nous. "
-			                          + "Vous pouvez maintenant vous connecter a votre espace pour prendre et consulter des rendez-vous chez "
-			                           + "des medecins dans différents centres medicaux.\n\nL'équipe Doctophine,\n\nParis 16éme.");
-
+			         		+ "Vous pouvez maintenant vous connecter a votre espace pour prendre et consulter des rendez-vous chez "
+			         		+ "des medecins dans différents centres medicaux de Paris.\n\nL'équipe Doctophine,\n\nParis 16éme.");   
 			         
 			         Transport.send(message);  
 
@@ -152,10 +154,9 @@ public class InscriptionController extends HttpServlet {
 			            System.out.println("Error: unable to send message....");
 			            mex.printStackTrace();
 			        } finally {
-			        	
-			        	requestDispatcher = request.getRequestDispatcher("index.jsp");
-						request.setAttribute("valide", "Inscription réussie, un email de confirmation vous a été envoyé!");
-						requestDispatcher.include(request, response);
+			       
+						request.getSession().setAttribute("valide", "Inscription réussie, un email de confirmation vous a été envoyé!");
+						response.sendRedirect("index.jsp");
 			        	
 			        }
 			     

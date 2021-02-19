@@ -41,6 +41,7 @@ public class FormulaireInscriptionDoctorController extends HttpServlet {
 			
 			requestDispatcher = request.getRequestDispatcher("inscription_doctor.jsp");
 			request.setAttribute("admin", admin); 
+			session.setAttribute("admin", admin);
 			requestDispatcher.include(request, response);
 		}
 		

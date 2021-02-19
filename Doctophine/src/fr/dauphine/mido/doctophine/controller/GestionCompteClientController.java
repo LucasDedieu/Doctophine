@@ -49,7 +49,7 @@ public class GestionCompteClientController extends HttpServlet {
 			requestDispatcher.include(request, response);
 		} else if (doctor != null) {
 			requestDispatcher = request.getRequestDispatcher("infos_patient.jsp");
-			request.setAttribute("patient", patient);
+			request.setAttribute("doctor", doctor);
 			requestDispatcher.include(request, response);
 		}
 	}

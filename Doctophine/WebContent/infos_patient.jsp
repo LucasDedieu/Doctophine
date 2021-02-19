@@ -157,6 +157,21 @@
 					</td>
 				</tr>
 			</form>
+			<form method="Post" action="ModificationComptePatientController" name="formAdresse">
+				<tr>
+					<th>Photo de profil</th>
+					<% if (p!=null){ %>
+					<td><%=p.getPhoto()%></td>
+					<%}else{ %>
+					<td><%=doctor.getPhoto()%></td>
+					<%} %>
+					<td><input type="text" name="photo" class="form-control"
+						required></td>
+					<td>
+						<button type="submit" class="btn btn-primary">Modifier</button>
+					</td>
+				</tr>
+			</form>
 		</tbody>
 	</table>
 

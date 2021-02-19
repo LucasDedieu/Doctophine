@@ -19,7 +19,7 @@ import fr.dauphine.mido.doctophine.service.PatientService;
 /**
  * Servlet implementation class LoginController
  */
-@WebServlet(urlPatterns ="/Login")
+@WebServlet("/Login")
 public class LoginController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
@@ -49,92 +49,92 @@ public class LoginController extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
+	
 		String login = request.getParameter("login");
-        String password = request.getParameter("password");
-        
-        HttpSession session = request.getSession(true); 
-        
-        Patient patient = patientService.findByEmail(login);
-        
-        RequestDispatcher requestDispatcher = null; 
-        
-        if(patient==null){
-            
-           Doctor doctor = doctorService.findByEmail(login);
-           
-           if(doctor==null){
-               System.out.println("Erreur de connexion1");
-        	   requestDispatcher = request.getRequestDispatcher("index.jsp");
-   			   request.setAttribute("error_login", "Login incorrecte");
-   			   requestDispatcher.include(request, response);
-           
-           }else{
-        	   	if (doctor.getPassword().equals(password) && !doctor.isDisabled() ) {
-        	   		
-        	   		System.out.println("Connexion du medecin"); 
-        	   		System.out.println("Nom du medecin: "+doctor.getLastName());
-        	   		session.setAttribute("doctor", doctor);
-        	   		response.sendRedirect("calendar.jsp");
-        	   	} else {
-        	   		
-        	   		System.out.println("Erreur de connexion2");
-        	   		requestDispatcher = request.getRequestDispatcher("index.jsp");
-        			request.setAttribute("error_login", "Mot de passe incorrecte");
-        			requestDispatcher.include(request, response);
-        	   		
-        	   	}
-           }
-           
-           
-        }else{	
-         
-        	boolean isAdmin=true;
-        	Patient admin=null;
-        	
-        	if (!patient.isAdmin()) {
-        		isAdmin=false;
-        	}
-        	else {
-         
-        		isAdmin=true;
-        		admin=patient;
-        	}
-            	if (!isAdmin) {
-              
-            		if (patient.getPassword().equals(password) && !patient.isDisabled()) {
-             
-            			System.out.println("Connexion du patient"); 
-            			session.setAttribute("patient", patient);
-            			response.sendRedirect("patient.jsp");
-            		}else {
-            		 
-            			System.out.println("Erreur de connexion3");
-            	   		requestDispatcher = request.getRequestDispatcher("index.jsp");
-            			request.setAttribute("error_login", "Mot de passe incorrecte");
-            			requestDispatcher.include(request, response);
-            			
-            		}
-    				
-            	}else {
-            	 
-            		if (admin.getPassword().equals(password) && !admin.isDisabled()) {
-            		 
-            			System.out.println("Connexion de l'administrateur ");  
-            			session.setAttribute("admin", patient);
-            			requestDispatcher = request.getRequestDispatcher("accueil.jsp");
-            			request.setAttribute("patient", patient);
-    					requestDispatcher.include(request, response);
-            		}else {
-          
-            			System.out.println("Erreur de connexion4");
-            	   		requestDispatcher = request.getRequestDispatcher("index.jsp");
-            			request.setAttribute("error_login", "Mot de passe incorrecte");
-            			requestDispatcher.include(request, response);
-            			
-            		}
-            	}
-        }
+	    String password = request.getParameter("password");
+	    
+	    HttpSession session = request.getSession(true); 
+	    
+	    Patient patient = patientService.findByEmail(login);
+	    
+	    RequestDispatcher requestDispatcher = null; 
+	    
+	    if(patient==null){
+	        
+	       Doctor doctor = doctorService.findByEmail(login);
+	       
+	       if(doctor==null){
+	           System.out.println("Erreur de connexion1");
+	    	   requestDispatcher = request.getRequestDispatcher("index.jsp");
+			   request.setAttribute("error_login", "Login incorrecte");
+			   requestDispatcher.include(request, response);
+	       
+	       }else{
+	    	   	if (doctor.getPassword().equals(password) && !doctor.isDisabled() ) {
+	    	   		
+	    	   		System.out.println("Connexion du medecin"); 
+	    	   		System.out.println("Nom du medecin: "+doctor.getLastName());
+	    	   		session.setAttribute("doctor", doctor);
+	    	   		response.sendRedirect("calendar.jsp");
+	    	   	} else {
+	    	   		
+	    	   		System.out.println("Erreur de connexion2");
+	    	   		requestDispatcher = request.getRequestDispatcher("index.jsp");
+	    			request.setAttribute("error_login", "Mot de passe incorrecte");
+	    			requestDispatcher.include(request, response);
+	    	   		
+	    	   	}
+	       }
+	       
+	       
+	    }else{	
+	     
+	    	boolean isAdmin=true;
+	    	Patient admin=null;
+	    	
+	    	if (!patient.isAdmin()) {
+	    		isAdmin=false;
+	    	}
+	    	else {
+	     
+	    		isAdmin=true;
+	    		admin=patient;
+	    	}
+	        	if (!isAdmin) {
+	          
+	        		if (patient.getPassword().equals(password) && !patient.isDisabled()) {
+	         
+	        			System.out.println("Connexion du patient"); 
+	        			session.setAttribute("patient", patient);
+	        			response.sendRedirect("patient.jsp");
+	        		}else {
+	        		 
+	        			System.out.println("Erreur de connexion3");
+	        	   		requestDispatcher = request.getRequestDispatcher("index.jsp");
+	        			request.setAttribute("error_login", "Mot de passe incorrecte");
+	        			requestDispatcher.include(request, response);
+	        			
+	        		}
+					
+	        	}else {
+	        	 
+	        		if (admin.getPassword().equals(password) && !admin.isDisabled()) {
+	        		 
+	        			System.out.println("Connexion de l'administrateur ");  
+	        			session.setAttribute("admin", patient);
+	        			requestDispatcher = request.getRequestDispatcher("accueil.jsp");
+	        			request.setAttribute("patient", patient);
+						requestDispatcher.include(request, response);
+	        		}else {
+	      
+	        			System.out.println("Erreur de connexion4");
+	        	   		requestDispatcher = request.getRequestDispatcher("index.jsp");
+	        			request.setAttribute("error_login", "Mot de passe incorrecte");
+	        			requestDispatcher.include(request, response);
+	        			
+	        		}
+	        	}
+	    }
 	}
 
 }

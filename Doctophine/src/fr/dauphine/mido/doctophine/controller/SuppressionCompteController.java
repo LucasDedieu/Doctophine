@@ -67,13 +67,14 @@ public class SuppressionCompteController extends HttpServlet {
 
 		HttpSession session_ = request.getSession();
 		Patient patient = (Patient) session_.getAttribute("patient");
-		Doctor doctor = (Doctor) session_.getAttribute("doctor"); 
+		Doctor doctor = (Doctor) session_.getAttribute("doctor");
 		RequestDispatcher requestDispatcher = null;
-		ArrayList<Appointment> allAppointment = new ArrayList<Appointment>();
-
+		ArrayList<Appointment> allAppointment = new ArrayList<Appointment>(); 
+		
 		if (patient != null) {
 
 			patient.setStatus("Inactif");
+			patient.setDisabled(true);
 			patientService.update(patient);
 			allAppointment = (ArrayList<Appointment>) appointmentService.findAllByPatientId(patient.getId());
 
@@ -86,21 +87,22 @@ public class SuppressionCompteController extends HttpServlet {
 					+ "\n\nles rendez-vous suivants ont été annulés:\n\n";
 
 			for (int i = 0; i < allAppointment.size(); i++) {
+				allAppointment.get(i).setCancelled(true);
 				appointmentService.update(allAppointment.get(i));
-				activities.add(allAppointment.get(i).getActivity()); 
-			} 
+				activities.add(allAppointment.get(i).getActivity());
+			}
 
 			for (int j = 0; j < activities.size(); j++) {
 				System.out.println("Doctor name: " + activities.get(j).getDoctor().getLastName());
 				doctors.add(activities.get(j).getDoctor());
 				specialities.add(activities.get(j).getSpeciality());
 				medicalcenters.add(activities.get(j).getMedicalCenter());
-				
-				int mois = allAppointment.get(j).getStartDate().getMonth()+1;
-				int année = allAppointment.get(j).getStartDate().getYear()+1900;
-				messageConfirmation += "\t\t- Le " + allAppointment.get(j).getStartDate().getDate() + "-"
-						+ mois +"-" + année+" à " + allAppointment.get(j).getStartDate().getHours()+"h"+
-						allAppointment.get(j).getStartDate().getMinutes();
+
+				int mois = allAppointment.get(j).getStartDate().getMonth() + 1;
+				int année = allAppointment.get(j).getStartDate().getYear() + 1900;
+				messageConfirmation += "\t\t- Le " + allAppointment.get(j).getStartDate().getDate() + "-" + mois + "-"
+						+ année + " à " + allAppointment.get(j).getStartDate().getHours() + "h"
+						+ allAppointment.get(j).getStartDate().getMinutes();
 
 				messageConfirmation += ", chez le medecin " + activities.get(j).getDoctor().getLastName()
 						+ " spécialiste en " + activities.get(j).getSpeciality().getName() + " au centre médical "
@@ -108,14 +110,14 @@ public class SuppressionCompteController extends HttpServlet {
 						+ activities.get(j).getMedicalCenter().getPhone() + "\n\t\t- Adresse du centre medical: "
 						+ activities.get(j).getMedicalCenter().getAddress() + "\n\n";
 			}
-			
+
 			messageConfirmation += "L'équipe Doctophine\n\n" + "Paris 16éme.";
 
 			String host = "smtp.gmail.com";
 			final String user = "ne.pas.repondre.doctophine@gmail.com";
 			final String motdepasse = "JavaApp2021";
 
-			String to = "anis.si-youcef@dauphine.eu";
+			String to = patient.getEmail();
 
 			Properties props = new Properties();
 			props.put("mail.smtp.host", "smtp.gmail.com");
@@ -145,44 +147,86 @@ public class SuppressionCompteController extends HttpServlet {
 				System.out.println("Error: unable to send message....");
 				mex.printStackTrace();
 			}
-			
+
 			requestDispatcher = request.getRequestDispatcher("index.jsp");
-			request.setAttribute("patient", patient);
+			session_.removeAttribute("patient");
 			requestDispatcher.include(request, response);
 
-		} else if (doctor!=null) {
-			 
-			ArrayList<Activity> activities = new ArrayList<Activity>(); 
+		} else if (doctor != null) {
+
+			ArrayList<Activity> activities = new ArrayList<Activity>();
 			 
 			activities = (ArrayList<Activity>) activityService.findAllByDoctorId(doctor.getId());
-			boolean noActivity=true;
-			
-			for (int i=0; i<activities.size(); i++) {
+			boolean noActivity = true;
+
+			for (int i = 0; i < activities.size(); i++) {
 				if (!appointmentService.findAllByActivityId(activities.get(i).getId()).isEmpty()) {
 					noActivity = false;
 					break;
 				}
 			}
-			
+
 			// Il y a des rdv en cours
-			if (!noActivity) { 
+			if (!noActivity) {
 				System.out.println("noActivity");
 				requestDispatcher = request.getRequestDispatcher("infos_patient.jsp");
 				request.setAttribute("doctor", doctor);
-				request.setAttribute("error_suppression", "Votre compte ne peut pas etre supprime, il y a des RDV a venir.");
+				request.setAttribute("error_suppression",
+						"Votre compte ne peut pas etre supprime, il y a des RDV a venir.");
 				requestDispatcher.include(request, response);
-				
+
 			} else {
 				// Pas de rdv en cours, suppression possible 
+				 
 				doctor.setStatus("inactif");
+				doctor.setDisabled(true);
+				doctorService.update(doctor);
+				
+				final String user = "ne.pas.repondre.doctophine@gmail.com";
+				final String motdepasse = "JavaApp2021";
+
+				String to = doctor.getEmail();
+				
+				String messageConfirmation = "Bonjour,\n\nVotre compte a été supprimé\n\n"+
+									"L'équipe Doctophine\n\n" + "Paris 16éme.";
+				
+				Properties props = new Properties();
+				props.put("mail.smtp.host", "smtp.gmail.com");
+				props.put("mail.smtp.auth", "true");
+				props.put("mail.smtp.port", "587");
+				props.put("mail.smtp.starttls.enable", "true");
+				props.put("mail.smtp.ssl.trust", "*");
+
+				Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+					protected PasswordAuthentication getPasswordAuthentication() {
+						return new PasswordAuthentication(user, motdepasse);
+					}
+				});
+
+				try {
+					MimeMessage message = new MimeMessage(session);
+					message.setFrom(new InternetAddress(user));
+					message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+					message.setSubject("[Doctophine] Confirmation de suppression de votre compte");
+					message.setText(messageConfirmation);
+
+					Transport.send(message);
+
+					System.out.println("message sent!");
+
+				} catch (MessagingException mex) {
+					System.out.println("Error: unable to send message....");
+					mex.printStackTrace();
+				}
+				
+				
 				requestDispatcher = request.getRequestDispatcher("index.jsp");
-				request.setAttribute("doctor", doctor);
+				session_.removeAttribute("doctor");
 				requestDispatcher.include(request, response);
 			}
-			
+
 		}
 
-		
 	}
 
 	/**

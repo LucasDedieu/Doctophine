@@ -120,7 +120,7 @@
 		</form>
 	</div>
 	
-	<form action="/Doctophine/Deconnexion" method="GET">
+	<form action="Deconnexion" method="GET">
             <button style="position:absolute;left:50px; top:0px; width:120px" type="submit" class="btn btn-danger">Deconnexion</button>
     </form>
 

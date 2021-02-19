@@ -14,8 +14,8 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<%--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script> --%>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script> 
 <link rel="stylesheet" href="css/inscription_doctor.css">
 <script src="js/inscription_doctor.js"></script>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -60,7 +60,7 @@
 	</div>
 	
 	<div  class="main-block1">
-    <form method="Post" action="/Doctophine/InscriptionDoctorController" name="myForm" onsubmit="return validateForm()"> 
+    <form method="Post" action="InscriptionDoctorController" name="myForm"> 
     	
       <fieldset>
         <legend>
@@ -90,15 +90,16 @@
         
       </fieldset>
       <fieldset></fieldset>    
+
       
-      <form action="/Doctophine/Deconnexion" method="GET">
+      <button type="submit" id="btn_submit">Suivant</button>
+    </form>
+      
+      <form action="Deconnexion" method="GET">
 		<button
 			style="position: absolute; left: 1380px; top: 7px; width: 120px"
 			type="submit" class="btn btn-danger">Deconnexion</button>
 	</form>
-      
-      <button type="submit" id="btn_submit">Suivant</button>
-    </form>
     </div> 
     <script>
     
@@ -141,7 +142,6 @@
         	    alert("Nom de ville invalide."); 
         	    return false; 
           }
-    	  
        	  
     	}
 
