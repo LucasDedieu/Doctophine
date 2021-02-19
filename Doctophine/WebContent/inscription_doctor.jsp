@@ -14,8 +14,8 @@
 <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600' rel='stylesheet' type='text/css'>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet">
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<%--<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script> --%>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script> 
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <link rel="stylesheet" href="css/inscription_doctor.css">
 <script src="js/inscription_doctor.js"></script>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
@@ -29,23 +29,22 @@
 		<h2>Doctophine</h2>
 	</div>
 	<div
-		style="color: white; width: 1440px; top: 0px; position: fixed; font-size: 15px; left: 700px">
-		<h2>Inscription</h2>
+		style="color: white; width: 1440px; top: 0px; position: fixed; font-size: 15px; left: 600px">
+		<h2>Inscription de medecin</h2>
 	</div>
 
-	<div class="form-signin"
-		style="position: absolute; top: 90px; left: 460px;">
+	<div style="position: absolute; top: 70px; left: 700px;">
 		<%
-			if (request.getAttribute("error") != null) {
-		%>
+                if (request.getAttribute("error") != null) {
 
-		<div class="alert alert-danger" role="alert">
-			<%=request.getAttribute("error")%>
+            %>
+		<div
+			style="position: relative; padding: .75rem 1.25rem; margin-bottom: 1rem; border: 1px solid transparent; border-radius: .25rem; color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; width: 150px;"
+			role="alert">
+			<%= request.getAttribute("error")%>
 		</div>
+		<% };%>
 
-		<%
-			} ;
-		%>
 	</div>
 
 	<div
@@ -60,7 +59,7 @@
 	</div>
 	
 	<div  class="main-block1">
-    <form method="Post" action="InscriptionDoctorController" name="myForm"> 
+    <form method="Post" action="InscriptionDoctorController" name="myForm" onsubmit="return validateForm()"> 
     	
       <fieldset>
         <legend>
@@ -89,18 +88,18 @@
         </div>
         
       </fieldset>
-      <fieldset></fieldset>    
-
+      <fieldset></fieldset>     
       
       <button type="submit" id="btn_submit">Suivant</button>
     </form>
-      
-      <form action="Deconnexion" method="GET">
+    </div> 
+    
+    <form action="Deconnexion" method="GET">
 		<button
-			style="position: absolute; left: 1380px; top: 7px; width: 120px"
+			style="position: absolute; left: 1380px; top: 0px; width: 120px"
 			type="submit" class="btn btn-danger">Deconnexion</button>
 	</form>
-    </div> 
+    
     <script>
     
     function validateForm() {
@@ -142,6 +141,7 @@
         	    alert("Nom de ville invalide."); 
         	    return false; 
           }
+    	  
        	  
     	}
 

@@ -6,6 +6,9 @@
 <% 
     Doctor currentDoctor = (Doctor) request.getAttribute("newDoctor");
 	Patient admin = (Patient) request.getAttribute("admin");
+	ArrayList<MedicalCenter> medicalCenters = (ArrayList<MedicalCenter>) request.getAttribute("medicalCenters");
+	ArrayList<Speciality> specialities = (ArrayList<Speciality>) request.getAttribute("specialities");
+	
 %>
 
 <!DOCTYPE html>
@@ -38,19 +41,23 @@
 		<h2>Doctophine</h2>
 	</div>
 	<div
-		style="color: white; width: 1440px; top: 0px; position: fixed; font-size: 15px; left: 700px">
-		<h2>Inscription</h2>
+		style="color: white; width: 1440px; top: 0px; position: fixed; font-size: 15px; left: 600px">
+		<h2>Inscription de medecin</h2>
 	</div>
+ 
+	
+	<div style="position: absolute; top: 70px; left: 500px;">
+		<%
+                if (request.getAttribute("add") != null) {
 
-	<div class="form-signin"
-		style="position: absolute; top: 90px; left: 460px;">
-		<%  if (request.getAttribute("error") != null) {  %>
-
-		<div class="alert alert-danger" role="alert">
-			<%= request.getAttribute("error")%>
+            %>
+		<div
+			style="position:relative;padding:.75rem 1.25rem;margin-bottom:1rem;border:1px solid transparent;border-radius:.25rem;color:#155724;background-color:#d4edda;border-color:#c3e6cb;border-top-color:#b1dfbb;"
+			role="alert">
+			<%= request.getAttribute("add")%>
 		</div>
-
 		<% };%>
+
 	</div>
 	
 	<div
@@ -69,7 +76,7 @@
 			<input type="hidden" name="currentDoctor" value=<%= currentDoctor.getEmail() %> />
 			<fieldset>
 				<legend>
-					<h3>Informations personnelles</h3>
+					<h3>Affectation du nouveau medecin</h3>
 				</legend>
 				<div class="container">
 					<table id="myTable" class=" table order-list">
@@ -84,44 +91,38 @@
 							<tr>
 								<td class="col-sm-4">
 								<select class="form-control" id="cars" >
-										<option selected><%= currentDoctor.getLastName() %></option> 
+										<option selected><%= currentDoctor.getFullName() %></option> 
 								</select>
 								</td>
 								<td class="col-sm-4">
-								<select class="form-control" id="cars" name="medicalcenter">
-										<option selected>Choisir un centre medical</option>
-										<option value="Dauphine">Dauphine</option>
-										<option value="Paul Sabatier">Paul Sabatier</option>
+								<select class="form-control" id="cars" name="medicalcenter"  >
+										<option value="" selected>Choisir un centre medical</option>
+										<% for(int i=0; i<medicalCenters.size(); i++){ %>
+										<option value=<%=medicalCenters.get(i).getId() %> ><%=medicalCenters.get(i).getName() %></option>
+										<% } %>
 								</select>
 								</td>
 								<td class="col-sm-4">
-								<select class="form-control" id="cars" name="speciality">
-										<option selected>Choisir une spécialité</option>
-										<option value="Ophtamologie">Ophtamologie</option>
-										<option value="ORL">ORL</option>
+								<select class="form-control" id="cars" name="speciality"  >
+										<option value="" selected>Choisir une spécialité</option> 
+										<% for(int i=0; i<specialities.size(); i++){ %>
+										<option value=<%=specialities.get(i).getId() %> ><%=specialities.get(i).getName() %></option>
+										<% } %>
 								</select>
 								</td> 
 								<td class="col-sm-2"><a class="deleteRow"></a></td>
 							</tr>
-						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="5" style="text-align: left;"><input
-									type="button" class="btn btn-lg btn-block" id="addrow"
-									value="Ajouter une autre affectation" /></td>
-							</tr>
-							<tr>
-							</tr>
-						</tfoot>
+						</tbody> 
 					</table>
 				</div>
 			</fieldset>
-			<button type="submit" id="btn_submit">Submit</button>
+			<button type="submit" name="addAffectation" id="btn_submit">Ajouter une affectation</button>
+			<button type="submit" name="confirme" id="btn_submit">Submit</button> 
 		</form>
 	</div>
 	
 	<form action="Deconnexion" method="GET">
-            <button style="position:absolute;left:50px; top:0px; width:120px" type="submit" class="btn btn-danger">Deconnexion</button>
+            <button style="position:absolute;left:1380px; top:0px; width:120px" type="submit" class="btn btn-danger">Deconnexion</button>
     </form>
 
 </body>
