@@ -1,5 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+
+<%@ include file="/fragments/header.jspf"%>
+ 
+<link rel="stylesheet" href="css/inscription_doctor.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  
 <%@ page import="fr.dauphine.mido.doctophine.model.*"%>
 <%@ page import="fr.dauphine.mido.doctophine.service.*"%>
 <%@ page import="java.util.*"%>
@@ -10,43 +15,8 @@
 	ArrayList<Speciality> specialities = (ArrayList<Speciality>) request.getAttribute("specialities");
 	
 %>
-
-<!DOCTYPE html>
-<html>
-<head>
-<title>Formulaire d'inscription</title>
-<link
-	href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,300italic,400italic,600'
-	rel='stylesheet' type='text/css'>
-<link
-	href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700"
-	rel="stylesheet">
-<link
-	href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css"
-	rel="stylesheet" id="bootstrap-css">
-<script
-	src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
-<link rel="stylesheet" href="css/inscription_doctor.css">
-<script src="js/inscription_doctor.js"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-</head>
-
-<body>
-	<nav
-		style="background: #053569; width: 100%; height: 50px; position: absolute; top: 0px;">
-	</nav>
-	<div
-		style="color: white; width: 1440px; top: 0px; position: fixed; font-size: 15px; left: 10px">
-		<h2>Doctophine</h2>
-	</div>
-	<div
-		style="color: white; width: 1440px; top: 0px; position: fixed; font-size: 15px; left: 600px">
-		<h2>Inscription de medecin</h2>
-	</div>
- 
-	
-	<div style="position: absolute; top: 70px; left: 500px;">
+   
+	<div style="position: absolute; top: 110px; left: 530px;">
 		<%
                 if (request.getAttribute("add") != null) {
 
@@ -58,18 +28,7 @@
 		</div>
 		<% };%>
 
-	</div>
-	
-	<div
-		style="color: #053569; width: 1440px; top: 43px; position: absolute; font-size: 15px; left: 60px">
-		<h2 style="font-family: monospace; font-size: 25px"><%=admin.getFirstName()%>
-			<%=admin.getLastName()%></h2>
-	</div>
-
-	<div
-		style="color: #053569; width: 1440px; top: 60px; position: absolute; font-size: 15px; left: 10px">
-		<i class="fa fa-user fa_custom fa-2x"></i>
-	</div>
+	</div> 
 
 	<div class="main-block1">
 		<form method="Post" action="DoctorAffectationController">
@@ -78,51 +37,47 @@
 				<legend>
 					<h3>Affectation du nouveau medecin</h3>
 				</legend>
-				<div class="container">
+				<div style="padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto">
 					<table id="myTable" class=" table order-list">
 						<thead>
 							<tr>
-								<td style="padding-left: 10px;">Nom du medecin</td>
-								<td style="padding-left: 10px;">Centre médical</td>
-								<td style="padding-left: 10px;">Spécialité</td>
+								<td style="padding-left: 10px; font-family: arial">Nom du medecin</td>
+								<td style="padding-left: 10px; font-family: arial">Centre médical</td>
+								<td style="padding-left: 10px; font-family: arial">Spécialité</td>
 							</tr>
 						</thead>
 						<tbody>
 							<tr>
-								<td class="col-sm-4">
-								<select class="form-control" id="cars" >
+								<td style="position:relative;min-height:1px;padding-right:15px;padding-left:15px;width:33.33333333%">
+								<select class="form-control" >
 										<option selected><%= currentDoctor.getFullName() %></option> 
 								</select>
 								</td>
-								<td class="col-sm-4">
-								<select class="form-control" id="cars" name="medicalcenter"  >
+								<td style="position:relative;min-height:1px;padding-right:15px;padding-left:15px;width:33.33333333%">
+								<select class="form-control" name="medicalcenter"  >
 										<option value="" selected>Choisir un centre medical</option>
 										<% for(int i=0; i<medicalCenters.size(); i++){ %>
 										<option value=<%=medicalCenters.get(i).getId() %> ><%=medicalCenters.get(i).getName() %></option>
 										<% } %>
 								</select>
 								</td>
-								<td class="col-sm-4">
-								<select class="form-control" id="cars" name="speciality"  >
+								<td style="position:relative;min-height:1px;padding-right:15px;padding-left:15px;width:33.33333333%">
+								<select class="form-control" name="speciality"  >
 										<option value="" selected>Choisir une spécialité</option> 
 										<% for(int i=0; i<specialities.size(); i++){ %>
 										<option value=<%=specialities.get(i).getId() %> ><%=specialities.get(i).getName() %></option>
 										<% } %>
 								</select>
-								</td> 
-								<td class="col-sm-2"><a class="deleteRow"></a></td>
+								</td>  
 							</tr>
 						</tbody> 
 					</table>
 				</div>
 			</fieldset>
-			<button type="submit" name="addAffectation" id="btn_submit">Ajouter une affectation</button>
-			<button type="submit" name="confirme" id="btn_submit">Submit</button> 
+			<button type="submit" name="addAffectation" id="btn_submit" style="background-color: #0596DE">Ajouter une affectation</button>
+			<button type="submit" name="confirme" id="btn_submit" style="background-color: #0596DE">Submit</button> 
 		</form>
 	</div>
-	
-	<form action="Deconnexion" method="GET">
-            <button style="position:absolute;left:1380px; top:0px; width:120px" type="submit" class="btn btn-danger">Deconnexion</button>
-    </form>
+ 
 
-</body>
+<%@ include file="/fragments/footer.jspf"%>

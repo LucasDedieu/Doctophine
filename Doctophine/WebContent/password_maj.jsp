@@ -1,26 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
-<%@ page import="fr.dauphine.mido.doctophine.model.*"%>
+<%@page import="fr.dauphine.mido.doctophine.model.Doctor"%>
+<%@page import="fr.dauphine.mido.doctophine.model.Patient"%>
+<%@ include file="/fragments/header.jspf"%>
 
-<!DOCTYPE html>
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Information Mot de passe</title>
-<link
-	href="https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-<link rel="stylesheet"
-	href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-	integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
-	crossorigin="anonymous">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
-<body>
 	<nav
 		style="background: #053569; width: 100%; height: 50px; position: absolute; top: 0px;">
 
@@ -125,5 +106,4 @@
 
     </script>
     
-</body>
-</html>
+<%@ include file="/fragments/footer.jspf"%>

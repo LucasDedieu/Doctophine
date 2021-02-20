@@ -28,11 +28,14 @@ public class MedicalCenterService extends Repository<MedicalCenter>{
 
 	@Override
 	public MedicalCenter findById(long id) {
+		/*
 		// TODO Auto-generated method stub
 		Query query = em.createQuery("SELECT m from MedicalCenter m where m.id=:id");
         query.setParameter("id", id);
         
         return (MedicalCenter) query.getResultList().stream().findFirst().orElse(null);
+        */
+		return  em.find(MedicalCenter.class, (int)id);
 	}
 	
 	public MedicalCenter findByName(String name) {

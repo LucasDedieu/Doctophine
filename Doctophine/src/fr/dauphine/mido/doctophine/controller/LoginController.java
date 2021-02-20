@@ -124,6 +124,7 @@ public class LoginController extends HttpServlet {
 	        			session.setAttribute("admin", patient);
 	        			requestDispatcher = request.getRequestDispatcher("accueil.jsp");
 	        			request.setAttribute("patient", patient);
+	        			response.setCharacterEncoding("UTF-8");
 						requestDispatcher.include(request, response);
 	        		}else {
 	      

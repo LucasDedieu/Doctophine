@@ -16,17 +16,17 @@ public class Activity {
     private int id;
 	
 	
-	@OneToOne(cascade = CascadeType.ALL )
+	@OneToOne(cascade = CascadeType.MERGE )
 	@JoinColumn(name = "doctor_id", referencedColumnName = "id")
 	private Doctor doctor;
 	
 	
-	@OneToOne(cascade = CascadeType.ALL )
+	@OneToOne(cascade = CascadeType.MERGE )
 	@JoinColumn(name = "medical_center_id", referencedColumnName = "id")
 	private MedicalCenter medicalCenter;
 	
 	
-	@OneToOne(cascade = CascadeType.ALL )
+	@OneToOne(cascade = CascadeType.MERGE )
 	@JoinColumn(name = "speciality_id", referencedColumnName = "id")
 	private Speciality speciality;
 	

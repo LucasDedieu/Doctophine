@@ -1,20 +1,28 @@
 <%@page import="fr.dauphine.mido.doctophine.model.Patient"%>
 <%@page import="fr.dauphine.mido.doctophine.model.Doctor"%>
 <%@page import="fr.dauphine.mido.doctophine.model.AbstractAccount"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<%
 String photo = null;
+String full_name = null;
 AbstractAccount loggedAccount = null;
 if(request.getSession().getAttribute("doctor")!=null){ 
 	loggedAccount= (Doctor)request.getSession().getAttribute("doctor");
 	photo = loggedAccount.getPhoto();
+	full_name = loggedAccount.getFullName();
 	
 }
-else if(request.getSession().getAttribute("patient")!=null){
+else if(request.getSession().getAttribute("patient")!=null){ 
 	loggedAccount= (Patient)request.getSession().getAttribute("patient");
 	photo = loggedAccount.getPhoto();
+	full_name = loggedAccount.getFullName();
+
+} else if (request.getSession().getAttribute("admin")!=null){
+	loggedAccount= (Patient)request.getSession().getAttribute("admin");
+	photo = loggedAccount.getPhoto();
+	full_name = loggedAccount.getFullName();
+	
 }
 
 
@@ -36,7 +44,6 @@ if(logoLink == null || logoLink.length()==0){
 		logoLink="index.jsp";
 	}
 }
-
 %>
 
 
@@ -75,18 +82,25 @@ if(logoLink == null || logoLink.length()==0){
 		<nav class="navbar  main-navbar navbar-expand-lg sticky-top">
 		<div class="container-fluid">
 	  		<a class="navbar-brand" href="<%=logoLink %>">Doctophine</a>
-	  		<%if(request.getSession().getAttribute("doctor")!=null || request.getSession().getAttribute("patient")!=null){ %>
+	  		<%if(request.getSession().getAttribute("doctor")!=null || request.getSession().getAttribute("patient")!=null
+	  				|| request.getSession().getAttribute("admin")!=null){ %>
 		  		<ul class="navbar-nav float-right">
 			  		<li class="nav-item dropdown">
 				        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 				        <%if(photo!=null){ %>
-				        	<img class = "photo" src="<%=photo %>"/>
+				        	<img class="photo" src="<%=photo %>"/>
 				        <%} else{%>
 				       	  <img src="images/profil.png"/>
 				       	  <%} %>
 				        </a>
 				        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+				        <p class="dropdown-item" > <%= full_name %> </p>
+				        <% if (!loggedAccount.isAdmin()){ %> 
 				          <a class="dropdown-item" href="GestionCompteClientController">Profil</a>
+				          
+				        <% } else{ %>
+				          <a class="dropdown-item" href="FormulaireInscriptionDoctorController">Inscription d'un medecin</a>
+				        <% } %>
 				          <a class="dropdown-item" href="Deconnexion">Se Deconnecter</a>
 				        </div>
 		     		 </li>

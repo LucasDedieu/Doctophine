@@ -100,6 +100,7 @@ public class DoctorAffectationController extends HttpServlet {
 				request.setAttribute("specialities", specialities);
 				request.setAttribute("add", "Affectation du medecin au centre medical " + medicalCenter.getName()
 						+ " en tant que " + speciality.getName());
+				response.setCharacterEncoding("UTF-8");
 				requestDispatcher.include(request, response);
 
 			} else {
@@ -110,6 +111,7 @@ public class DoctorAffectationController extends HttpServlet {
 				request.setAttribute("newDoctor", newDoctor);
 				request.setAttribute("medicalCenters", medicalCenters);
 				request.setAttribute("specialities", specialities);
+				response.setCharacterEncoding("UTF-8");
 				requestDispatcher.include(request, response);
 			}
 

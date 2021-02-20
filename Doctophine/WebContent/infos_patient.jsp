@@ -61,7 +61,7 @@
 	</nav>
 
 	<table class="table"
-		style="margin-left: 300px; margin-top: 150px; width: 50%">
+		style="margin-left: 300px; margin-top: 100px; width: 50%">
 		<tbody>
 			<form method="Post" action="ModificationComptePatientController" 
 					name="formNom" onsubmit="return validateFormNom()">
@@ -161,10 +161,16 @@
 				<tr>
 					<th>Photo de profil</th>
 					<% if (p!=null){ %>
-					<td><%=p.getPhoto()%></td>
-					<%}else{ %>
-					<td><%=doctor.getPhoto()%></td>
-					<%} %>
+						<% if (p.getPhoto()!=null){%> 
+							<td><%=p.getPhoto().substring(0, 40).concat("...") %></td> 
+						<%} else{%> 
+							<td>Aucune photo</td>	
+					<% 	} }else{ %>
+						<% if (doctor.getPhoto()!=null){%> 
+							<td><%=doctor.getPhoto().substring(0, 40).concat("...")%></td>
+						<%} else{%> 
+							<td>Aucune photo</td>
+					<%} }%>
 					<td><input type="text" name="photo" class="form-control"
 						required></td>
 					<td>
@@ -212,7 +218,7 @@
   	}
     
     function validateFormEmail() {
-    	  var email = document.forms["formPrenom"]["email"].value; 
+    	  var email = document.forms["formEmail"]["email"].value; 
     	    
     	  if (!email.match(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) {
     	    
@@ -222,7 +228,7 @@
     	}
     
     function validateFormTel() {
-  	  var tel = document.forms["formPrenom"]["tel"].value; 
+  	  var tel = document.forms["formTel"]["tel"].value; 
   	    
   	  if (!tel.match(/^(33|0)(1|6|7|9)\d{8}$/)) {
   	    

@@ -120,6 +120,7 @@ public class InscriptionDoctorController extends HttpServlet {
 			request.setAttribute("newDoctor", newDoctor);
 			request.setAttribute("medicalCenters", medicalCenters);
 			request.setAttribute("specialities", specialities);
+			response.setCharacterEncoding("UTF-8");
 			requestDispatcher.include(request, response);
 
 		}
