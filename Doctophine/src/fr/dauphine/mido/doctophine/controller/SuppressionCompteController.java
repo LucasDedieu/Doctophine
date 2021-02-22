@@ -173,6 +173,7 @@ public class SuppressionCompteController extends HttpServlet {
 				request.setAttribute("doctor", doctor);
 				request.setAttribute("error_suppression",
 						"Votre compte ne peut pas etre supprime, il y a des RDV a venir.");
+				response.setCharacterEncoding("UTF-8");
 				requestDispatcher.include(request, response);
 
 			} else {
@@ -222,6 +223,7 @@ public class SuppressionCompteController extends HttpServlet {
 				
 				requestDispatcher = request.getRequestDispatcher("index.jsp");
 				session_.removeAttribute("doctor");
+				response.setCharacterEncoding("UTF-8");
 				requestDispatcher.include(request, response);
 			}
 

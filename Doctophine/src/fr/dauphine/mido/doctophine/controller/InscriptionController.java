@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fr.dauphine.mido.doctophine.model.Patient;
+import fr.dauphine.mido.doctophine.service.MailService;
 import fr.dauphine.mido.doctophine.service.PatientService;
 
 /**
@@ -46,7 +47,7 @@ public class InscriptionController extends HttpServlet {
 	 */
 	public InscriptionController() {
 		super();
-// TODO Auto-generated constructor stub
+		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -57,8 +58,8 @@ public class InscriptionController extends HttpServlet {
 			throws ServletException, IOException {
 
 		response.getWriter().append("RequestURL : ").append(request.getRequestURI()).append("\nContextPath : ")
-				.append(request.getContextPath()).append("\nServ letPath : ").append(request.getServletPath())
-				.append("\nMethod : ").append(request.getMethod());
+		.append(request.getContextPath()).append("\nServ letPath : ").append(request.getServletPath())
+		.append("\nMethod : ").append(request.getMethod());
 
 	}
 
@@ -84,19 +85,19 @@ public class InscriptionController extends HttpServlet {
 		Patient patient = patientService.findByEmail(email);
 
 		if (patient != null) {
-			
+
 			System.out.println("Erreur");
 			requestDispatcher = request.getRequestDispatcher("inscription_client.jsp");
 			request.setAttribute("error", "Email deja existant.");
 			requestDispatcher.include(request, response);
-			
+
 		} else {
-			
+
 			String adresse = rue + " " + code_postal + " " + ville;
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			Date date_naissance = null;
 			Date creationDate = null;
-			
+
 			try {
 				date_naissance = sdf.parse(date);
 				creationDate = sdf.parse(date);
@@ -109,57 +110,60 @@ public class InscriptionController extends HttpServlet {
 			Patient newPatient = new Patient(prenom, nom, adresse, email, password, date_naissance, tel);
 
 			patientService.save(newPatient);
-			
+
 			//request.getSession().setAttribute("valide", "Inscription réussie, un email de confirmation vous a été envoyé!");
 			//response.sendRedirect("index.jsp");
+			/*
+			String host="smtp.gmail.com";  
+			final String user = "ne.pas.repondre.doctophine@gmail.com";
+			final String motdepasse = "JavaApp2021";
+			
+			String to=email;
 
-			  String host="smtp.gmail.com";  
-			  final String user = "ne.pas.repondre.doctophine@gmail.com";
-			  final String motdepasse = "JavaApp2021";
 
-			  String to=email;
+			Properties props = new Properties(); 
+			props.put("mail.smtp.host", "smtp.gmail.com"); 
+			props.put("mail.smtp.auth", "true"); 
+			props.put("mail.smtp.port", "587"); 
+			props.put("mail.smtp.starttls.enable", "true"); 
+			props.put("mail.smtp.ssl.trust", "*");
 
-			    
-			   Properties props = new Properties(); 
-			   props.put("mail.smtp.host", "smtp.gmail.com"); 
-			   props.put("mail.smtp.auth", "true"); 
-			   props.put("mail.smtp.port", "587"); 
-			   props.put("mail.smtp.starttls.enable", "true"); 
-			   props.put("mail.smtp.ssl.trust", "*");
+			Session session = Session.getDefaultInstance(props,  
+					new javax.mail.Authenticator() {  
+				protected PasswordAuthentication getPasswordAuthentication() {  
+					return new PasswordAuthentication(user,motdepasse);  
+				}  
+			}); 
+			*/
 
-			   Session session = Session.getDefaultInstance(props,  
-			    new javax.mail.Authenticator() {  
-			      protected PasswordAuthentication getPasswordAuthentication() {  
-			    return new PasswordAuthentication(user,motdepasse);  
-			      }  
-			    }); 
+			try {  
+				String subject = "[Doctophine] Confirmation d'inscription"; 
+				String text = "Bonjour\n\nBienvenue sur Docotophine, nous sommes ravi de vous avoir parmi nous. "
+						+ "Vous pouvez maintenant vous connecter a votre espace pour prendre et consulter des rendez-vous chez "
+						+ "des medecins dans différents centres medicaux de Paris.\n\nL'équipe Doctophine,\n\nParis 16éme."; 
+				MailService.getInstance().sendMail(subject, text, email);
+				/*
+				MimeMessage message = new MimeMessage(session);  
+				message.setFrom(new InternetAddress(user));  
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));  
+				
+				message.setText("Bonjour\n\nBienvenu sur Docotophine, nous sommes ravi de vous avoir parmi nous. "
+						+ "Vous pouvez maintenant vous connecter a votre espace pour prendre et consulter des rendez-vous chez "
+						+ "des medecins dans différents centres medicaux de Paris.\n\nL'équipe Doctophine,\n\nParis 16éme.");   
 
-			 
-			        try {  
-			         MimeMessage message = new MimeMessage(session);  
-			         message.setFrom(new InternetAddress(user));  
-			         message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));  
-			         message.setSubject("[Patient] Confirmation d'inscription");  
-			         message.setText("Bonjour\n\nBienvenu sur Docotophine, nous sommes ravi de vous avoir parmi nous. "
-			         		+ "Vous pouvez maintenant vous connecter a votre espace pour prendre et consulter des rendez-vous chez "
-			         		+ "des medecins dans différents centres medicaux de Paris.\n\nL'équipe Doctophine,\n\nParis 16éme.");   
-			         
-			         Transport.send(message);  
+				Transport.send(message);  
+				*/
+				System.out.println("message sent!");  
 
-			         System.out.println("message sent!");  
+				
+			} 
+			finally {
 
-			         } 
-			        catch (MessagingException mex) 
-			        {
-			            System.out.println("Error: unable to send message....");
-			            mex.printStackTrace();
-			        } finally {
-			       
-						request.getSession().setAttribute("valide", "Inscription réussie, un email de confirmation vous a été envoyé!");
-						response.sendRedirect("index.jsp");
-			        	
-			        }
-			     
+				//request.getSession().setAttribute("valide", "Inscription réussie, un email de confirmation vous a été envoyé!");
+				response.sendRedirect("index.jsp");
+
+			}
+
 		}
 
 	}
