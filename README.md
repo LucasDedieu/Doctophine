@@ -19,6 +19,7 @@ This is a Java EE project that aims to replicate the functionality of the popula
 - Manage appointments and view booking history
 - Doctor profiles with availability and specialties
 - Admin panel for managing doctors and appointments
+- Send reminder email before appointments
 
 ## Requirements
 
